@@ -20,18 +20,21 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useLoanStore } from "@/stores/loanStore";
+import { useLocation } from "wouter";
 
 const formSchema = z.object({
   type: z.enum(["pawn", "consumer", "retail"]),
-  amount: z.number().min(1),
-  term: z.number().min(1),
-  interestRate: z.number().min(0),
+  amount: z.coerce.number().min(1, "Amount must be greater than 0"),
+  term: z.coerce.number().min(1, "Term must be at least 1 month"),
+  interestRate: z.coerce.number().min(0, "Interest rate cannot be negative"),
   purpose: z.string().optional(),
   collateral: z.string().optional(),
 });
 
 export default function LoanForm() {
   const { createLoan } = useLoanStore();
+  const [, setLocation] = useLocation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,17 +42,23 @@ export default function LoanForm() {
       amount: 0,
       term: 12,
       interestRate: 5,
+      purpose: "",
+      collateral: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createLoan(values);
-    form.reset();
+    try {
+      await createLoan(values);
+      setLocation("/loans"); // Redirect to loans page after successful submission
+    } catch (error) {
+      console.error("Failed to create loan:", error);
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="type"
@@ -81,12 +90,13 @@ export default function LoanForm() {
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Loan Amount</FormLabel>
+              <FormLabel>Loan Amount ($)</FormLabel>
               <FormControl>
                 <Input
                   type="number"
+                  min="0"
+                  step="100"
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -103,8 +113,9 @@ export default function LoanForm() {
               <FormControl>
                 <Input
                   type="number"
+                  min="1"
+                  max="60"
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -121,9 +132,10 @@ export default function LoanForm() {
               <FormControl>
                 <Input
                   type="number"
-                  step="0.01"
+                  step="0.1"
+                  min="0"
+                  max="100"
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -136,9 +148,12 @@ export default function LoanForm() {
           name="purpose"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Purpose</FormLabel>
+              <FormLabel>Purpose (Optional)</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea 
+                  placeholder="Describe the purpose of the loan"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -150,16 +165,19 @@ export default function LoanForm() {
           name="collateral"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Collateral</FormLabel>
+              <FormLabel>Collateral (Optional)</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea 
+                  placeholder="Describe any collateral for the loan"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Submit Application</Button>
+        <Button type="submit" className="w-full">Submit Application</Button>
       </form>
     </Form>
   );
