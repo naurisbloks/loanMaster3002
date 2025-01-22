@@ -10,7 +10,7 @@ import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
 import { useAuthStore } from "@/stores/authStore";
 
-function PrivateRoute({ component: Component }: { component: React.ComponentType }) {
+function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
@@ -19,7 +19,7 @@ function PrivateRoute({ component: Component }: { component: React.ComponentType
     return null;
   }
 
-  return <Component />;
+  return <Layout>{children}</Layout>;
 }
 
 function Router() {
@@ -29,14 +29,14 @@ function Router() {
 
       <Route path="/">
         {() => (
-          <Layout>
+          <PrivateRoute>
             <Switch>
               <Route path="/" component={Dashboard} />
               <Route path="/loans" component={LoansPage} />
               <Route path="/applications" component={ApplicationsPage} />
               <Route component={NotFound} />
             </Switch>
-          </Layout>
+          </PrivateRoute>
         )}
       </Route>
     </Switch>
