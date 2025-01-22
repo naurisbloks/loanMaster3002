@@ -26,16 +26,18 @@ function Router() {
     <Switch>
       <Route path="/login" component={LoginPage} />
 
-      {/* Protected Routes */}
+      {/* Protected Routes wrapped in Layout */}
       <Route path="/">
-        <Layout>
-          <Switch>
-            <Route path="/" component={() => <PrivateRoute component={Dashboard} />} />
-            <Route path="/loans" component={() => <PrivateRoute component={LoanList} />} />
-            <Route path="/applications" component={() => <PrivateRoute component={LoanForm} />} />
-            <Route component={NotFound} />
-          </Switch>
-        </Layout>
+        {() => (
+          <Layout>
+            <Switch>
+              <Route path="/" component={() => <PrivateRoute component={Dashboard} />} />
+              <Route path="/loans" component={() => <PrivateRoute component={LoanList} />} />
+              <Route path="/applications" component={() => <PrivateRoute component={LoanForm} />} />
+              <Route component={NotFound} />
+            </Switch>
+          </Layout>
+        )}
       </Route>
     </Switch>
   );

@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Menu, Home, FileText, BarChart2, Users } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 
 const menuItems = [
   { label: "Dashboard", path: "/", icon: Home },
@@ -28,19 +28,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const Icon = item.icon;
 
     return (
-      <Link href={item.path}>
-        <a
-          className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-            isActive
-              ? "bg-[#064296] text-white shadow-md"
-              : "text-[#2E2E36] hover:bg-[#064296]/10 hover:text-[#064296]"
-          }`}
-          onClick={() => setOpen(false)}
-        >
-          <Icon className="mr-3 h-5 w-5" />
-          {item.label}
-        </a>
-      </Link>
+      <Button
+        variant="ghost"
+        className={`w-full flex items-center justify-start px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+          isActive
+            ? "bg-[#064296] text-white shadow-md"
+            : "text-[#2E2E36] hover:bg-[#064296]/10 hover:text-[#064296]"
+        }`}
+        onClick={() => {
+          window.location.href = item.path;
+          setOpen(false);
+        }}
+      >
+        <Icon className="mr-3 h-5 w-5" />
+        {item.label}
+      </Button>
     );
   };
 
