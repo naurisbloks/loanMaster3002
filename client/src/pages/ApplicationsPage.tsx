@@ -6,7 +6,9 @@ export default function ApplicationsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">New Loan Application</h1>
       </div>
-      <LoanForm />
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <LoanForm />
+      </div>
     </div>
   );
 }

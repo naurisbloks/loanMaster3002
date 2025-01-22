@@ -11,6 +11,46 @@ interface LoanStore {
   updateLoanStatus: (id: number, status: Loan['status']) => Promise<void>;
 }
 
+const mockLoans: Loan[] = [
+  {
+    id: 1,
+    userId: 1,
+    type: 'pawn',
+    amount: 5000,
+    status: 'pending',
+    interestRate: 5,
+    term: 12,
+    purpose: 'Business expansion',
+    collateral: 'Jewelry',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    userId: 1,
+    type: 'consumer',
+    amount: 10000,
+    status: 'approved',
+    interestRate: 7.5,
+    term: 24,
+    purpose: 'Home renovation',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    userId: 2,
+    type: 'retail',
+    amount: 2000,
+    status: 'active',
+    interestRate: 4.5,
+    term: 6,
+    purpose: 'Electronics purchase',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 export const useLoanStore = create<LoanStore>((set) => ({
   loans: [],
   loading: false,
@@ -19,12 +59,8 @@ export const useLoanStore = create<LoanStore>((set) => ({
   fetchLoans: async () => {
     try {
       set({ loading: true });
-      const response = await fetch('/api/loans');
-      if (!response.ok) {
-        throw new Error('Failed to fetch loans');
-      }
-      const data = await response.json();
-      set({ loans: data, loading: false });
+      // Using mock data instead of API call
+      set({ loans: mockLoans, loading: false });
     } catch (error) {
       toast({
         title: "Error",
@@ -38,17 +74,16 @@ export const useLoanStore = create<LoanStore>((set) => ({
   createLoan: async (data: LoanFormData) => {
     try {
       set({ loading: true });
-      const response = await fetch('/api/loans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      // Create a new mock loan
+      const newLoan: Loan = {
+        id: mockLoans.length + 1,
+        userId: 1,
+        ...data,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-      if (!response.ok) {
-        throw new Error('Failed to create loan');
-      }
-
-      const newLoan = await response.json();
       set((state) => ({
         loans: [...state.loans, newLoan],
         loading: false,
@@ -71,20 +106,12 @@ export const useLoanStore = create<LoanStore>((set) => ({
   updateLoanStatus: async (id: number, status: Loan['status']) => {
     try {
       set({ loading: true });
-      const response = await fetch(`/api/loans/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update loan status');
-      }
-
-      const updatedLoan = await response.json();
+      // Update mock loan status
       set((state) => ({
         loans: state.loans.map((loan) =>
-          loan.id === id ? updatedLoan : loan
+          loan.id === id 
+            ? { ...loan, status, updatedAt: new Date().toISOString() } 
+            : loan
         ),
         loading: false,
       }));
