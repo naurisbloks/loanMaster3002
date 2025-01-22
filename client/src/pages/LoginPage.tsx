@@ -14,9 +14,13 @@ export default function LoginPage() {
 
   const handleMsLogin = async () => {
     setIsLoading(true);
-    // Mock Microsoft login
+    // Mock Microsoft login with user data
     setTimeout(() => {
-      login();
+      login({
+        firstName: "John",
+        lastName: "Smith",
+        branch: "San Francisco Branch",
+      });
       setLocation("/");
     }, 1000);
   };
@@ -24,9 +28,13 @@ export default function LoginPage() {
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Mock password login
+    // Mock password login with user data
     setTimeout(() => {
-      login();
+      login({
+        firstName: "John",
+        lastName: "Smith",
+        branch: "San Francisco Branch",
+      });
       setLocation("/");
     }, 1000);
   };

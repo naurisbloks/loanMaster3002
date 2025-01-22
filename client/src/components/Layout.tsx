@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, Home, FileText, BarChart2, Users } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { UserNav } from "./UserNav";
 
 const menuItems = [
   { label: "Dashboard", path: "/", icon: Home },
@@ -60,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b">
-        <div className="flex h-16 items-center px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
+        <div className="flex h-16 items-center justify-between px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
@@ -78,12 +79,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </nav>
             </SheetContent>
           </Sheet>
-          <h1 className="ml-4 text-lg font-semibold text-white">Loan Admin</h1>
+          <h1 className="text-lg font-semibold text-white">Loan Admin</h1>
+          <UserNav />
         </div>
       </div>
 
+      {/* Desktop Header */}
+      <div className="hidden md:flex md:fixed md:left-64 right-0 h-16 items-center justify-end px-6 border-b bg-white z-10">
+        <UserNav />
+      </div>
+
       {/* Main Content */}
-      <main className="flex-1 md:pl-64">
+      <main className="flex-1 md:pl-64 md:pt-16">
         <div className="px-4 py-4 md:px-8 md:py-6 max-w-7xl mx-auto">
           {children}
         </div>

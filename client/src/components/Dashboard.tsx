@@ -92,18 +92,27 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Search Bar */}
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#2E2E36]/50" />
-          <Input
-            className="pl-10 h-12 bg-white shadow-md"
-            placeholder="Search loans..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
+
+      <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-r from-[#064296]/5 to-transparent">
+        <CardHeader className="border-b">
+          <CardTitle className="text-[#2E2E36]">Quick Search</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          {/* Search Bar */}
+          <div className=" max-w-2xl mx-auto px-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#2E2E36]/50" />
+              <Input
+                className="pl-10 h-12 bg-white shadow-md"
+                placeholder="Search client, loans, applications..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
 
       {/* Quick Actions */}
       <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-r from-[#064296]/5 to-transparent">
