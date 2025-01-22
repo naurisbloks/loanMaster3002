@@ -9,8 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLoanStore } from "@/stores/loanStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loan } from "@/types";
+import LoanDetails from "./LoanDetails";
 
 const statusColors: Record<Loan['status'], string> = {
   pending: "bg-yellow-500",
@@ -22,12 +23,20 @@ const statusColors: Record<Loan['status'], string> = {
 
 export default function LoanList() {
   const { loans, fetchLoans, updateLoanStatus } = useLoanStore();
+  const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     fetchLoans();
   }, [fetchLoans]);
 
-  const handleStatusChange = async (id: number, status: Loan['status']) => {
+  const handleRowClick = (loan: Loan) => {
+    setSelectedLoan(loan);
+    setDetailsOpen(true);
+  };
+
+  const handleStatusChange = async (e: React.MouseEvent, id: number, status: Loan['status']) => {
+    e.stopPropagation(); // Prevent row click when clicking status buttons
     await updateLoanStatus(id, status);
   };
 
@@ -47,7 +56,11 @@ export default function LoanList() {
           </TableHeader>
           <TableBody>
             {loans.map((loan) => (
-              <TableRow key={loan.id}>
+              <TableRow
+                key={loan.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleRowClick(loan)}
+              >
                 <TableCell>{loan.id}</TableCell>
                 <TableCell className="capitalize">{loan.type}</TableCell>
                 <TableCell>${loan.amount}</TableCell>
@@ -64,14 +77,14 @@ export default function LoanList() {
                     <div className="space-x-2">
                       <Button
                         size="sm"
-                        onClick={() => handleStatusChange(loan.id, "approved")}
+                        onClick={(e) => handleStatusChange(e, loan.id, "approved")}
                       >
                         Approve
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleStatusChange(loan.id, "rejected")}
+                        onClick={(e) => handleStatusChange(e, loan.id, "rejected")}
                       >
                         Reject
                       </Button>
@@ -83,6 +96,12 @@ export default function LoanList() {
           </TableBody>
         </Table>
       </div>
+
+      <LoanDetails
+        loan={selectedLoan}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
     </div>
   );
 }

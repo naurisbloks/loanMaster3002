@@ -7,14 +7,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useClientStore } from "@/stores/clientStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Client } from "@/types";
+import ClientDetails from "./ClientDetails";
 
 export default function ClientList() {
   const { clients, fetchClients } = useClientStore();
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  const handleRowClick = (client: Client) => {
+    setSelectedClient(client);
+    setDetailsOpen(true);
+  };
 
   return (
     <div>
@@ -31,7 +40,11 @@ export default function ClientList() {
           </TableHeader>
           <TableBody>
             {clients.map((client) => (
-              <TableRow key={client.id}>
+              <TableRow 
+                key={client.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleRowClick(client)}
+              >
                 <TableCell>
                   {client.firstName} {client.lastName}
                 </TableCell>
@@ -46,6 +59,12 @@ export default function ClientList() {
           </TableBody>
         </Table>
       </div>
+
+      <ClientDetails 
+        client={selectedClient}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
     </div>
   );
 }
