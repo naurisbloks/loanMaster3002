@@ -46,10 +46,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-gray-50 flex">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex md:flex-col md:w-64 border-r bg-white">
-        <div className="p-6 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-          <h1 className="text-2xl font-bold text-white">Loan Admin</h1>
+        <div className="p-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
+          <h1 className="text-xl font-bold text-white">Loan Admin</h1>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-2 space-y-1">
           {menuItems.map((item) => (
             <NavLink key={item.path} item={item} />
           ))}
@@ -66,10 +66,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
-              <div className="p-6 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-                <h1 className="text-2xl font-bold text-white">Loan Admin</h1>
+              <div className="p-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
+                <h1 className="text-xl font-bold text-white">Loan Admin</h1>
               </div>
-              <nav className="p-4 space-y-2">
+              <nav className="p-2 space-y-1">
                 {menuItems.map((item) => (
                   <NavLink key={item.path} item={item} />
                 ))}
@@ -81,8 +81,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 min-h-screen pt-16 md:pt-0">
-        <div className="container mx-auto p-4 lg:p-8 max-w-7xl">
+      <main className="flex-1 md:pl-64 min-h-screen pt-16 md:pt-0">
+        <div className="h-full p-4">
           {children}
         </div>
       </main>
