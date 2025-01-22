@@ -23,7 +23,10 @@
     "withEmail": "Sign in with Email",
     "email": "Email address",
     "password": "Password",
-    "branch": "Branch"
+    "branch": "Branch",
+    "signInDesc": "Sign in to access your dashboard",
+    "or": "Or continue with",
+    "backToMicrosoft": "Back to Microsoft login"
   },
   "loans": {
     "title": "Loans",

@@ -14,7 +14,11 @@ const languages = [
   { code: "lt", name: "Lietuvių" },
 ];
 
-export function LanguageSelector() {
+interface LanguageSelectorProps {
+  variant?: "default" | "login";
+}
+
+export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
   const { i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -27,14 +31,22 @@ export function LanguageSelector() {
     setCurrentLang(value);
   };
 
+  const triggerClassName = variant === "login"
+    ? "w-[140px] bg-white border-input text-foreground"
+    : "w-[140px] bg-white/10 border-white/20 text-white hover:bg-white/20";
+
   return (
     <Select value={currentLang} onValueChange={handleLanguageChange}>
-      <SelectTrigger className="w-[140px] bg-white/10 border-white/20 text-white">
+      <SelectTrigger className={triggerClassName}>
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-white border shadow-lg">
         {languages.map((lang) => (
-          <SelectItem key={lang.code} value={lang.code}>
+          <SelectItem 
+            key={lang.code} 
+            value={lang.code}
+            className="hover:bg-gray-100 cursor-pointer"
+          >
             {lang.name}
           </SelectItem>
         ))}

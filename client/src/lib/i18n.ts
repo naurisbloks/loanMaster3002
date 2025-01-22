@@ -24,6 +24,12 @@ i18n
   .init({
     resources,
     fallbackLng: "en",
+    detection: {
+      order: ['cookie', 'localStorage', 'navigator'],
+      lookupCookie: 'i18next',
+      caches: ['cookie'],
+      cookieMinutes: 43200, // 30 days
+    },
     interpolation: {
       escapeValue: false,
     },
