@@ -62,24 +62,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b">
         <div className="flex h-16 items-center justify-between px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
-              <div className="flex items-center h-16 px-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-                <h1 className="text-xl font-bold text-white">Loan Admin</h1>
-              </div>
-              <nav className="px-2 py-2 space-y-1">
-                {menuItems.map((item) => (
-                  <NavLink key={item.path} item={item} />
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
-          <h1 className="text-lg font-semibold text-white">Loan Admin</h1>
+          <div className="flex items-center">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0">
+                <div className="flex items-center h-16 px-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
+                  <h1 className="text-xl font-bold text-white">Loan Admin</h1>
+                </div>
+                <nav className="px-2 py-2 space-y-1">
+                  {menuItems.map((item) => (
+                    <NavLink key={item.path} item={item} />
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+            <h1 className="text-lg font-semibold text-white ml-4">Loan Admin</h1>
+          </div>
           <UserNav />
         </div>
       </div>
