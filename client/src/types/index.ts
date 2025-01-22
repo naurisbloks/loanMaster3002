@@ -4,6 +4,16 @@ export interface User {
   role: string;
 }
 
+export interface Client {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  createdAt: string;
+}
+
 export interface Loan {
   id: number;
   userId: number;

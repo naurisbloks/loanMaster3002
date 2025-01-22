@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard";
 import LoansPage from "@/pages/LoansPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
+import ClientsPage from "@/pages/ClientsPage";
 import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
 import { useAuthStore } from "@/stores/authStore";
@@ -35,6 +36,13 @@ function Router() {
         {() => (
           <PrivateRoute>
             <LoansPage />
+          </PrivateRoute>
+        )}
+      </Route>
+      <Route path="/clients">
+        {() => (
+          <PrivateRoute>
+            <ClientsPage />
           </PrivateRoute>
         )}
       </Route>

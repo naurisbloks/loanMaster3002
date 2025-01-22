@@ -12,7 +12,8 @@ import { UserNav } from "./UserNav";
 const menuItems = [
   { label: "Dashboard", path: "/", icon: Home },
   { label: "Loans", path: "/loans", icon: FileText },
-  { label: "Applications", path: "/applications", icon: Users },
+  { label: "Applications", path: "/applications", icon: BarChart2 },
+  { label: "Clients", path: "/clients", icon: Users },
   { label: "Reports", path: "/reports", icon: BarChart2 },
 ];
 
