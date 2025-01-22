@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
 import { useClientStore } from "@/stores/clientStore";
 
@@ -39,12 +39,21 @@ export default function ClientDetails({ client, open, onOpenChange }: ClientDeta
     defaultValues: client || {},
   });
 
+  // Reset form when client changes
+  useEffect(() => {
+    if (client) {
+      form.reset(client);
+    }
+  }, [client, form]);
+
   if (!client) return null;
 
   const onSubmit = async (data: z.infer<typeof clientSchema>) => {
     try {
       await updateClient(client.id, data);
       setIsEditing(false);
+      // Reset form with new values after successful update
+      form.reset(data);
     } catch (error) {
       console.error("Failed to update client:", error);
     }
@@ -57,10 +66,9 @@ export default function ClientDetails({ client, open, onOpenChange }: ClientDeta
         <Input
           className="mt-1"
           {...form.register(fieldName)}
-          defaultValue={value}
         />
       ) : (
-        <p className="text-sm">{value}</p>
+        <p className="text-sm">{form.getValues(fieldName) || value}</p>
       )}
     </div>
   );
@@ -102,10 +110,9 @@ export default function ClientDetails({ client, open, onOpenChange }: ClientDeta
                 <Input
                   className="mt-1"
                   {...form.register("address")}
-                  defaultValue={client.address}
                 />
               ) : (
-                <p className="text-sm">{client.address}</p>
+                <p className="text-sm">{form.getValues("address") || client.address}</p>
               )}
             </div>
 
@@ -124,7 +131,10 @@ export default function ClientDetails({ client, open, onOpenChange }: ClientDeta
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => {
+                    setIsEditing(false);
+                    form.reset(client);
+                  }}
                 >
                   Cancel
                 </Button>

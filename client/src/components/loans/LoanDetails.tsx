@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
 import { useLoanStore } from "@/stores/loanStore";
 
@@ -49,12 +49,21 @@ export default function LoanDetails({ loan, open, onOpenChange }: LoanDetailsPro
     defaultValues: loan || {},
   });
 
+  // Reset form when loan changes
+  useEffect(() => {
+    if (loan) {
+      form.reset(loan);
+    }
+  }, [loan, form]);
+
   if (!loan) return null;
 
   const onSubmit = async (data: z.infer<typeof loanSchema>) => {
     try {
       await updateLoan(loan.id, data);
       setIsEditing(false);
+      // Reset form with new values after successful update
+      form.reset(data);
     } catch (error) {
       console.error("Failed to update loan:", error);
     }
@@ -68,10 +77,9 @@ export default function LoanDetails({ loan, open, onOpenChange }: LoanDetailsPro
           type={type}
           className="mt-1"
           {...form.register(fieldName)}
-          defaultValue={value}
         />
       ) : (
-        <p className="text-sm">{value}</p>
+        <p className="text-sm">{form.getValues(fieldName) || value}</p>
       )}
     </div>
   );
@@ -138,10 +146,9 @@ export default function LoanDetails({ loan, open, onOpenChange }: LoanDetailsPro
                 <Textarea
                   className="mt-1"
                   {...form.register("purpose")}
-                  defaultValue={loan.purpose}
                 />
               ) : (
-                <p className="text-sm">{loan.purpose}</p>
+                <p className="text-sm">{form.getValues("purpose") || loan.purpose}</p>
               )}
             </div>
 
@@ -151,10 +158,9 @@ export default function LoanDetails({ loan, open, onOpenChange }: LoanDetailsPro
                 <Textarea
                   className="mt-1"
                   {...form.register("collateral")}
-                  defaultValue={loan.collateral}
                 />
               ) : (
-                <p className="text-sm">{loan.collateral}</p>
+                <p className="text-sm">{form.getValues("collateral") || loan.collateral}</p>
               )}
             </div>
 
@@ -177,7 +183,10 @@ export default function LoanDetails({ loan, open, onOpenChange }: LoanDetailsPro
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => {
+                    setIsEditing(false);
+                    form.reset(loan);
+                  }}
                 >
                   Cancel
                 </Button>
