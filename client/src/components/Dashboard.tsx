@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLoanStore } from "@/stores/loanStore";
 import { useEffect, useState } from "react";
@@ -69,15 +74,14 @@ export default function Dashboard() {
   );
 
   const StatCard = ({ title, value, icon: Icon, subtitle }: any) => (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
-      <CardHeader className="flex flex-row items-center justify-between pb-2 relative">
+    <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-[#064296]/5 to-transparent">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
         </CardTitle>
         <Icon className="h-4 w-4 text-[#064296]" />
       </CardHeader>
-      <CardContent className="relative">
+      <CardContent>
         <div className="text-2xl font-bold text-[#064296]">{value}</div>
         {subtitle && (
           <p className="text-xs text-[#2E2E36]/70 mt-1">{subtitle}</p>
@@ -100,8 +104,8 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <Card className="overflow-hidden border-0 shadow-lg">
-        <CardHeader className="border-b bg-gradient-to-r from-[#064296]/5 to-transparent">
+      <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-r from-[#064296]/5 to-transparent">
+        <CardHeader className="border-b">
           <CardTitle className="text-[#2E2E36]">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -158,12 +162,11 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
-          <CardHeader className="relative">
+        <Card className="bg-gradient-to-br from-[#064296]/5 to-transparent">
+          <CardHeader>
             <CardTitle className="text-[#2E2E36]">Loans by Type</CardTitle>
           </CardHeader>
-          <CardContent className="relative">
+          <CardContent>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={loansByType}>
@@ -189,12 +192,11 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
-          <CardHeader className="relative">
+        <Card className="bg-gradient-to-br from-[#064296]/5 to-transparent">
+          <CardHeader>
             <CardTitle className="text-[#2E2E36]">Amount Distribution</CardTitle>
           </CardHeader>
-          <CardContent className="relative">
+          <CardContent>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={loansByType}>
