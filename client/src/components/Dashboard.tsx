@@ -58,7 +58,7 @@ export default function Dashboard() {
   const QuickActionButton = ({ icon: Icon, label, onClick }: any) => (
     <Button
       variant="outline"
-      className="h-32 flex-col gap-3 flex-1 border-2 hover:bg-[#064296] hover:text-white transition-all duration-200 group"
+      className="h-32 flex-col gap-3 flex-1 border-2 hover:bg-[#064296] hover:text-white transition-all duration-200 group cursor-pointer hover:scale-[1.02]"
       onClick={onClick}
     >
       <div className="rounded-full bg-[#064296]/10 p-3 group-hover:bg-white/20">
