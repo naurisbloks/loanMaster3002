@@ -8,10 +8,10 @@ import LoanList from "@/components/loans/LoanList";
 import LoanForm from "@/components/loans/LoanForm";
 import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
+import { useAuthStore } from "@/stores/authStore";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
-  // TODO: Add proper auth check
-  const isAuthenticated = false;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   if (!isAuthenticated) {
     window.location.href = "/login";

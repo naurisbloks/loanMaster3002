@@ -4,23 +4,31 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { User } from "lucide-react";
 import { useLocation } from "wouter";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function LoginPage() {
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswordLogin, setShowPasswordLogin] = useState(false);
+  const login = useAuthStore((state) => state.login);
 
   const handleMsLogin = async () => {
     setIsLoading(true);
-    // TODO: Implement Microsoft SSO login
-    setIsLoading(false);
+    // Mock Microsoft login
+    setTimeout(() => {
+      login();
+      setLocation("/");
+    }, 1000);
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // TODO: Implement password login
-    setIsLoading(false);
+    // Mock password login
+    setTimeout(() => {
+      login();
+      setLocation("/");
+    }, 1000);
   };
 
   return (
