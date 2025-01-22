@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useLoanStore } from "@/stores/loanStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -10,10 +11,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { DollarSign, Users, Clock, CheckCircle } from "lucide-react";
+import { DollarSign, Users, Clock, CheckCircle, Search, UserPlus, Package, Wallet, CreditCard } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const { loans, fetchLoans } = useLoanStore();
+  const [, setLocation] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchLoans();
@@ -50,6 +55,17 @@ export default function Dashboard() {
     },
   ];
 
+  const QuickActionButton = ({ icon: Icon, label, onClick }: any) => (
+    <Button
+      variant="outline"
+      className="h-24 flex-col gap-2 flex-1 border-2 hover:border-[#064296] hover:text-[#064296] transition-colors"
+      onClick={onClick}
+    >
+      <Icon className="h-6 w-6" />
+      <span className="text-sm font-medium">{label}</span>
+    </Button>
+  );
+
   const StatCard = ({ title, value, icon: Icon, subtitle }: any) => (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
@@ -70,6 +86,48 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#2E2E36]/50" />
+        <Input
+          className="pl-10"
+          placeholder="Search clients, loans, or items..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[#2E2E36]">Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <QuickActionButton
+              icon={UserPlus}
+              label="New Client"
+              onClick={() => setLocation("/clients/new")}
+            />
+            <QuickActionButton
+              icon={Package}
+              label="New Item"
+              onClick={() => setLocation("/items/new")}
+            />
+            <QuickActionButton
+              icon={Wallet}
+              label="New Pawn Loan"
+              onClick={() => setLocation("/applications?type=pawn")}
+            />
+            <QuickActionButton
+              icon={CreditCard}
+              label="New Consumer Loan"
+              onClick={() => setLocation("/applications?type=consumer")}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Loan Amount"
