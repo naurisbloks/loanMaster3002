@@ -43,21 +43,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="flex h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex md:flex-col md:w-64 border-r bg-white">
-        <div className="p-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-          <h1 className="text-xl font-bold text-white">Loan Admin</h1>
+      <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-white border-r">
+        <div className="flex flex-col flex-grow">
+          <div className="flex items-center h-16 px-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
+            <h1 className="text-xl font-bold text-white">Loan Admin</h1>
+          </div>
+          <nav className="flex-1 px-2 py-2 space-y-1">
+            {menuItems.map((item) => (
+              <NavLink key={item.path} item={item} />
+            ))}
+          </nav>
         </div>
-        <nav className="flex-1 p-2 space-y-1">
-          {menuItems.map((item) => (
-            <NavLink key={item.path} item={item} />
-          ))}
-        </nav>
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b">
         <div className="flex h-16 items-center px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -66,10 +68,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
-              <div className="p-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
+              <div className="flex items-center h-16 px-4 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
                 <h1 className="text-xl font-bold text-white">Loan Admin</h1>
               </div>
-              <nav className="p-2 space-y-1">
+              <nav className="px-2 py-2 space-y-1">
                 {menuItems.map((item) => (
                   <NavLink key={item.path} item={item} />
                 ))}
@@ -81,8 +83,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 md:pl-64 min-h-screen pt-16 md:pt-0">
-        <div className="h-full p-4">
+      <main className="flex-1 md:pl-64">
+        <div className="px-4 py-4 md:px-8 md:py-6 max-w-7xl mx-auto">
           {children}
         </div>
       </main>
