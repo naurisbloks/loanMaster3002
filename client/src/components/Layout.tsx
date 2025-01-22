@@ -1,8 +1,4 @@
 import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import {
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -47,9 +43,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col bg-white border-r shadow-lg">
+      <aside className="hidden md:block w-64 fixed left-0 top-0 h-screen bg-white border-r shadow-lg">
         <div className="p-6 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
           <h1 className="text-2xl font-bold text-white">
             Loan Admin
@@ -63,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden sticky top-0 z-50 w-full bg-white border-b shadow-sm">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm">
         <div className="flex h-16 items-center px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -89,11 +85,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Content */}
-      <main className="md:pl-64 min-h-screen">
+      <main className="flex-1 w-full md:pl-64 min-h-screen pt-16 md:pt-0">
         <div className="container mx-auto p-4 lg:p-8 max-w-7xl">
-          <Card className="shadow-lg border-0">
-            <CardContent className="p-6">{children}</CardContent>
-          </Card>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            {children}
+          </div>
         </div>
       </main>
     </div>
