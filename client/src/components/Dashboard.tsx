@@ -58,10 +58,12 @@ export default function Dashboard() {
   const QuickActionButton = ({ icon: Icon, label, onClick }: any) => (
     <Button
       variant="outline"
-      className="h-24 flex-col gap-2 flex-1 border-2 hover:border-[#064296] hover:text-[#064296] transition-colors"
+      className="h-32 flex-col gap-3 flex-1 border-2 hover:bg-[#064296] hover:text-white transition-all duration-200 group"
       onClick={onClick}
     >
-      <Icon className="h-6 w-6" />
+      <div className="rounded-full bg-[#064296]/10 p-3 group-hover:bg-white/20">
+        <Icon className="h-8 w-8 text-[#064296] group-hover:text-white" />
+      </div>
       <span className="text-sm font-medium">{label}</span>
     </Button>
   );
@@ -98,11 +100,11 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden border-0 shadow-lg">
+        <CardHeader className="border-b bg-gradient-to-r from-[#064296]/5 to-transparent">
           <CardTitle className="text-[#2E2E36]">Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <QuickActionButton
               icon={UserPlus}
