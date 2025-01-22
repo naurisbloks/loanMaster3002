@@ -7,6 +7,7 @@ interface ClientStore {
   loading: boolean;
   error: string | null;
   fetchClients: () => Promise<void>;
+  updateClient: (id: number, data: Partial<Client>) => Promise<void>;
 }
 
 // Mock data for initial development
@@ -41,6 +42,31 @@ export const useClientStore = create<ClientStore>((set) => ({
       set({ loading: true });
       // Using mock data instead of API call for now
       set({ clients: mockClients, loading: false });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  updateClient: async (id: number, data: Partial<Client>) => {
+    try {
+      set({ loading: true });
+      // Update client in mock data
+      set((state) => ({
+        clients: state.clients.map((client) =>
+          client.id === id ? { ...client, ...data } : client
+        ),
+        loading: false,
+      }));
+
+      toast({
+        title: "Success",
+        description: "Client information updated successfully",
+      });
     } catch (error) {
       toast({
         title: "Error",

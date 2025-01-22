@@ -8,6 +8,7 @@ interface LoanStore {
   error: string | null;
   fetchLoans: () => Promise<void>;
   createLoan: (data: LoanFormData) => Promise<void>;
+  updateLoan: (id: number, data: Partial<Loan>) => Promise<void>;
   updateLoanStatus: (id: number, status: Loan['status']) => Promise<void>;
 }
 
@@ -92,6 +93,37 @@ export const useLoanStore = create<LoanStore>((set) => ({
       toast({
         title: "Success",
         description: "Loan application submitted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  updateLoan: async (id: number, data: Partial<Loan>) => {
+    try {
+      set({ loading: true });
+      // Update loan in mock data
+      set((state) => ({
+        loans: state.loans.map((loan) =>
+          loan.id === id
+            ? {
+                ...loan,
+                ...data,
+                updatedAt: new Date().toISOString(),
+              }
+            : loan
+        ),
+        loading: false,
+      }));
+
+      toast({
+        title: "Success",
+        description: "Loan details updated successfully",
       });
     } catch (error) {
       toast({
