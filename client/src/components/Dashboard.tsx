@@ -51,17 +51,18 @@ export default function Dashboard() {
   ];
 
   const StatCard = ({ title, value, icon: Icon, subtitle }: any) => (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
+      <CardHeader className="flex flex-row items-center justify-between pb-2 relative">
+        <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
         </CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <Icon className="h-4 w-4 text-[#064296]" />
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+      <CardContent className="relative">
+        <div className="text-2xl font-bold text-[#064296]">{value}</div>
         {subtitle && (
-          <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+          <p className="text-xs text-[#2E2E36]/70 mt-1">{subtitle}</p>
         )}
       </CardContent>
     </Card>
@@ -97,27 +98,29 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Loans by Type</CardTitle>
+        <Card className="overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
+          <CardHeader className="relative">
+            <CardTitle className="text-[#2E2E36]">Loans by Type</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative">
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={loansByType}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-50" />
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis dataKey="type" />
                   <YAxis />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(var(--background))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "var(--radius)",
+                      background: "white",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "0.5rem",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                   />
                   <Bar
                     dataKey="count"
-                    fill="hsl(var(--primary))"
+                    fill="#064296"
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
@@ -126,28 +129,30 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Amount Distribution</CardTitle>
+        <Card className="overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#064296]/5 to-transparent" />
+          <CardHeader className="relative">
+            <CardTitle className="text-[#2E2E36]">Amount Distribution</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative">
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={loansByType}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-50" />
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis dataKey="type" />
                   <YAxis />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(var(--background))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "var(--radius)",
+                      background: "white",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "0.5rem",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                     formatter={(value) => [`$${value}`, "Amount"]}
                   />
                   <Bar
                     dataKey="amount"
-                    fill="hsl(var(--primary))"
+                    fill="#43B02A"
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
