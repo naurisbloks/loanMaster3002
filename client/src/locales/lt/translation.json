@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "dashboard": "Skydelis",
+    "loans": "Paskolos",
+    "applications": "Paraiškos",
+    "clients": "Klientai",
+    "reports": "Ataskaitos"
+  },
+  "common": {
+    "search": "Ieškoti",
+    "edit": "Redaguoti",
+    "save": "Išsaugoti pakeitimus",
+    "cancel": "Atšaukti",
+    "confirm": "Patvirtinti",
+    "delete": "Ištrinti",
+    "created": "Sukurta",
+    "updated": "Atnaujinta"
+  },
+  "auth": {
+    "signIn": "Prisijungti",
+    "signOut": "Atsijungti",
+    "withMicrosoft": "Prisijungti su Microsoft",
+    "withEmail": "Prisijungti su el. paštu",
+    "email": "El. pašto adresas",
+    "password": "Slaptažodis",
+    "branch": "Filialas"
+  },
+  "loans": {
+    "title": "Paskolos",
+    "new": "Nauja paskola",
+    "type": "Paskolos tipas",
+    "amount": "Suma",
+    "term": "Terminas",
+    "status": "Būsena",
+    "purpose": "Tikslas",
+    "collateral": "Užstatas",
+    "interestRate": "Palūkanų norma",
+    "approve": "Patvirtinti",
+    "reject": "Atmesti"
+  },
+  "clients": {
+    "title": "Klientai",
+    "details": "Kliento informacija",
+    "firstName": "Vardas",
+    "lastName": "Pavardė",
+    "email": "El. paštas",
+    "phone": "Telefonas",
+    "address": "Adresas"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "dashboard": "Panelis",
+    "loans": "Kredīti",
+    "applications": "Pieteikumi",
+    "clients": "Klienti",
+    "reports": "Atskaites"
+  },
+  "common": {
+    "search": "Meklēt",
+    "edit": "Rediģēt",
+    "save": "Saglabāt izmaiņas",
+    "cancel": "Atcelt",
+    "confirm": "Apstiprināt",
+    "delete": "Dzēst",
+    "created": "Izveidots",
+    "updated": "Atjaunināts"
+  },
+  "auth": {
+    "signIn": "Ieiet",
+    "signOut": "Iziet",
+    "withMicrosoft": "Ieiet ar Microsoft",
+    "withEmail": "Ieiet ar e-pastu",
+    "email": "E-pasta adrese",
+    "password": "Parole",
+    "branch": "Filiāle"
+  },
+  "loans": {
+    "title": "Kredīti",
+    "new": "Jauns kredīts",
+    "type": "Kredīta veids",
+    "amount": "Summa",
+    "term": "Termiņš",
+    "status": "Statuss",
+    "purpose": "Mērķis",
+    "collateral": "Nodrošinājums",
+    "interestRate": "Procentu likme",
+    "approve": "Apstiprināt",
+    "reject": "Noraidīt"
+  },
+  "clients": {
+    "title": "Klienti",
+    "details": "Klienta informācija",
+    "firstName": "Vārds",
+    "lastName": "Uzvārds",
+    "email": "E-pasts",
+    "phone": "Tālrunis",
+    "address": "Adrese"
+  }
+}

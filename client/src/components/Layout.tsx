@@ -8,18 +8,24 @@ import { Menu, Home, FileText, BarChart2, Users } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { UserNav } from "./UserNav";
+import { LanguageSelector } from "./LanguageSelector";
+import { useTranslation } from "react-i18next";
 
-const menuItems = [
-  { label: "Dashboard", path: "/", icon: Home },
-  { label: "Loans", path: "/loans", icon: FileText },
-  { label: "Applications", path: "/applications", icon: BarChart2 },
-  { label: "Clients", path: "/clients", icon: Users },
-  { label: "Reports", path: "/reports", icon: BarChart2 },
-];
+function getMenuItems(t: (key: string) => string) {
+  return [
+    { label: t("nav.dashboard"), path: "/", icon: Home },
+    { label: t("nav.loans"), path: "/loans", icon: FileText },
+    { label: t("nav.applications"), path: "/applications", icon: BarChart2 },
+    { label: t("nav.clients"), path: "/clients", icon: Users },
+    { label: t("nav.reports"), path: "/reports", icon: BarChart2 },
+  ];
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
+  const menuItems = getMenuItems(t);
 
   const NavLink = ({ item }: { item: typeof menuItems[0] }) => {
     const isActive = location === item.path;
@@ -83,13 +89,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Sheet>
             <h1 className="text-lg font-semibold text-white ml-4">Loan Admin</h1>
           </div>
-          <UserNav />
+          <div className="flex items-center gap-4">
+            <LanguageSelector />
+            <UserNav />
+          </div>
         </div>
       </div>
 
       {/* Desktop Header */}
       <div className="hidden md:flex md:fixed md:left-64 right-0 h-16 items-center justify-end px-6 border-b bg-white z-10">
-        <UserNav />
+        <div className="flex items-center gap-4">
+          <LanguageSelector />
+          <UserNav />
+        </div>
       </div>
 
       {/* Main Content */}

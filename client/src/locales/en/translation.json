@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "loans": "Loans",
+    "applications": "Applications",
+    "clients": "Clients",
+    "reports": "Reports"
+  },
+  "common": {
+    "search": "Search",
+    "edit": "Edit",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "created": "Created On",
+    "updated": "Last Updated"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "withMicrosoft": "Sign in with Microsoft",
+    "withEmail": "Sign in with Email",
+    "email": "Email address",
+    "password": "Password",
+    "branch": "Branch"
+  },
+  "loans": {
+    "title": "Loans",
+    "new": "New Loan",
+    "type": "Loan Type",
+    "amount": "Amount",
+    "term": "Term",
+    "status": "Status",
+    "purpose": "Purpose",
+    "collateral": "Collateral",
+    "interestRate": "Interest Rate",
+    "approve": "Approve",
+    "reject": "Reject"
+  },
+  "clients": {
+    "title": "Clients",
+    "details": "Client Details",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address"
+  }
+}
