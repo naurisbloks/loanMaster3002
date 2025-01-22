@@ -16,7 +16,7 @@ const menuItems = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
 
   const NavLink = ({ item }: { item: typeof menuItems[0] }) => {
@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             : "text-[#2E2E36] hover:bg-[#064296]/10 hover:text-[#064296]"
         }`}
         onClick={() => {
-          window.location.href = item.path;
+          setLocation(item.path);
           setOpen(false);
         }}
       >

@@ -16,7 +16,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { DollarSign, Users, Clock, CheckCircle, Search, UserPlus, Package, Wallet, CreditCard } from "lucide-react";
+import { DollarSign, Users, Clock, CheckCircle, Search, Package, Wallet, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 
@@ -60,11 +60,11 @@ export default function Dashboard() {
     },
   ];
 
-  const QuickActionButton = ({ icon: Icon, label, onClick }: any) => (
+  const QuickActionButton = ({ icon: Icon, label, path }: any) => (
     <Button
       variant="outline"
       className="h-32 flex-col gap-3 flex-1 border-2 hover:bg-[#064296] hover:text-white transition-all duration-200 group cursor-pointer hover:scale-[1.02]"
-      onClick={onClick}
+      onClick={() => setLocation(path)}
     >
       <div className="rounded-full bg-[#064296]/10 p-3 group-hover:bg-white/20">
         <Icon className="h-8 w-8 text-[#064296] group-hover:text-white" />
@@ -97,7 +97,7 @@ export default function Dashboard() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#2E2E36]/50" />
         <Input
           className="pl-10"
-          placeholder="Search clients, loans, or items..."
+          placeholder="Search loans..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -111,24 +111,24 @@ export default function Dashboard() {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <QuickActionButton
-              icon={UserPlus}
-              label="New Client"
-              onClick={() => setLocation("/clients/new")}
-            />
-            <QuickActionButton
               icon={Package}
-              label="New Item"
-              onClick={() => setLocation("/items/new")}
+              label="View Loans"
+              path="/loans"
             />
             <QuickActionButton
               icon={Wallet}
               label="New Pawn Loan"
-              onClick={() => setLocation("/applications?type=pawn")}
+              path="/applications"
             />
             <QuickActionButton
               icon={CreditCard}
               label="New Consumer Loan"
-              onClick={() => setLocation("/applications?type=consumer")}
+              path="/applications"
+            />
+            <QuickActionButton
+              icon={Clock}
+              label="View Applications"
+              path="/applications"
             />
           </div>
         </CardContent>
