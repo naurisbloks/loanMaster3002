@@ -26,9 +26,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
       <Button
         variant="ghost"
-        className={`w-full flex items-center justify-start px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+        className={`w-full justify-start gap-2 ${
           isActive
-            ? "bg-[#064296] text-white shadow-md"
+            ? "bg-[#064296] text-white hover:bg-[#064296]/90 hover:text-white"
             : "text-[#2E2E36] hover:bg-[#064296]/10 hover:text-[#064296]"
         }`}
         onClick={() => {
@@ -36,7 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           setOpen(false);
         }}
       >
-        <Icon className="mr-3 h-5 w-5" />
+        <Icon className="h-4 w-4" />
         {item.label}
       </Button>
     );
@@ -45,13 +45,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block w-64 fixed left-0 top-0 h-screen bg-white border-r shadow-lg">
+      <aside className="hidden md:flex md:flex-col md:w-64 border-r bg-white">
         <div className="p-6 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-          <h1 className="text-2xl font-bold text-white">
-            Loan Admin
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Loan Admin</h1>
         </div>
-        <nav className="flex-1 space-y-2 px-4 py-6">
+        <nav className="flex-1 p-4 space-y-2">
           {menuItems.map((item) => (
             <NavLink key={item.path} item={item} />
           ))}
@@ -59,37 +57,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b">
         <div className="flex h-16 items-center px-4 bg-gradient-to-r from-[#064296] to-[#064296]/90">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="mr-4 text-white hover:bg-white/20">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
               <div className="p-6 border-b bg-gradient-to-r from-[#064296] to-[#064296]/90">
-                <h1 className="text-2xl font-bold text-white">
-                  Loan Admin
-                </h1>
+                <h1 className="text-2xl font-bold text-white">Loan Admin</h1>
               </div>
-              <nav className="space-y-2 p-4">
+              <nav className="p-4 space-y-2">
                 {menuItems.map((item) => (
                   <NavLink key={item.path} item={item} />
                 ))}
               </nav>
             </SheetContent>
           </Sheet>
-          <h1 className="text-lg font-semibold text-white">Loan Admin</h1>
+          <h1 className="ml-4 text-lg font-semibold text-white">Loan Admin</h1>
         </div>
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 w-full md:pl-64 min-h-screen pt-16 md:pt-0">
+      <main className="flex-1 md:ml-64 min-h-screen pt-16 md:pt-0">
         <div className="container mx-auto p-4 lg:p-8 max-w-7xl">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            {children}
-          </div>
+          {children}
         </div>
       </main>
     </div>

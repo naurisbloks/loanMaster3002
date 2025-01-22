@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,15 +10,16 @@ import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
 import { useAuthStore } from "@/stores/authStore";
 
-function PrivateRoute({ component: Component, ...rest }: any) {
+function PrivateRoute({ component: Component }: { component: React.ComponentType }) {
+  const [, setLocation] = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   if (!isAuthenticated) {
-    window.location.href = "/login";
+    setLocation("/login");
     return null;
   }
 
-  return <Component {...rest} />;
+  return <Component />;
 }
 
 function Router() {
@@ -26,14 +27,13 @@ function Router() {
     <Switch>
       <Route path="/login" component={LoginPage} />
 
-      {/* Protected Routes */}
       <Route path="/">
         {() => (
           <Layout>
             <Switch>
-              <Route path="/" component={() => <PrivateRoute component={Dashboard} />} />
-              <Route path="/loans" component={() => <PrivateRoute component={LoansPage} />} />
-              <Route path="/applications" component={() => <PrivateRoute component={ApplicationsPage} />} />
+              <Route path="/" component={Dashboard} />
+              <Route path="/loans" component={LoansPage} />
+              <Route path="/applications" component={ApplicationsPage} />
               <Route component={NotFound} />
             </Switch>
           </Layout>
