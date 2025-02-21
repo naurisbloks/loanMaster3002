@@ -33,7 +33,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
 
   const triggerClassName = variant === "login"
     ? "w-[140px] bg-white border-input text-foreground"
-    : "w-[140px] bg-white/10 border-white/20 text-white hover:bg-white/20";
+    : "w-[140px] bg-white border-input text-foreground hover:bg-gray-50";
 
   return (
     <Select value={currentLang} onValueChange={handleLanguageChange}>

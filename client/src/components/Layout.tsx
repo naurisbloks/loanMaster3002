@@ -99,7 +99,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Desktop Header */}
       <div className="hidden md:flex md:fixed md:left-64 right-0 h-16 items-center justify-end px-6 border-b bg-white z-10">
         <div className="flex items-center gap-4">
-          <LanguageSelector />
+          <LanguageSelector variant="default" />
           <UserNav />
         </div>
       </div>
