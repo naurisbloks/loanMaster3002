@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLoanStore } from "@/stores/loanStore";
 import { useEffect, useState } from "react";
@@ -16,7 +11,16 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { DollarSign, Users, Clock, CheckCircle, Search, Package, Wallet, CreditCard } from "lucide-react";
+import {
+  DollarSign,
+  Users,
+  Clock,
+  CheckCircle,
+  Search,
+  Package,
+  Wallet,
+  CreditCard,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
@@ -76,7 +80,7 @@ export default function Dashboard() {
 
   const StatCard = ({ title, value, icon: Icon, subtitle, colors }: any) => (
     <Card className="overflow-hidden relative">
-      <AnimatedGradient colors={colors} speed={50} blur="medium" />
+      <AnimatedGradient colors={colors} speed={0.1} blur="medium" />
       <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10 bg-background/50 backdrop-blur-sm">
         <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
@@ -196,11 +200,7 @@ export default function Dashboard() {
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                   />
-                  <Bar
-                    dataKey="count"
-                    fill="#064296"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <Bar dataKey="count" fill="#064296" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -209,7 +209,9 @@ export default function Dashboard() {
 
         <Card className="bg-gradient-to-br from-[#064296]/5 to-transparent">
           <CardHeader>
-            <CardTitle className="text-[#2E2E36]">Amount Distribution</CardTitle>
+            <CardTitle className="text-[#2E2E36]">
+              Amount Distribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -227,11 +229,7 @@ export default function Dashboard() {
                     }}
                     formatter={(value) => [`$${value}`, "Amount"]}
                   />
-                  <Bar
-                    dataKey="amount"
-                    fill="#43B02A"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <Bar dataKey="amount" fill="#43B02A" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
