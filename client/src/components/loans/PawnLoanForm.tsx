@@ -10,6 +10,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 import { useLoanStore } from "@/stores/loanStore";
 import { useClientStore } from "@/stores/clientStore";
 import { useLocation } from "wouter";
@@ -42,6 +44,12 @@ const deviceDetailsSchema = z.object({
   camera: z.string().optional(),
   simCards: z.string().optional(),
   hdd: z.string().optional(),
+});
+
+const accessoriesSchema = z.object({
+  hasCharger: z.boolean(),
+  hasOtherAccessories: z.boolean(),
+  accessoriesDescription: z.string().optional().or(z.string().min(1, "Please describe the accessories")),
 });
 
 export default function PawnLoanForm() {
@@ -77,20 +85,38 @@ export default function PawnLoanForm() {
     },
   });
 
+  const accessoriesForm = useForm<z.infer<typeof accessoriesSchema>>({
+    resolver: zodResolver(accessoriesSchema),
+    defaultValues: {
+      hasCharger: false,
+      hasOtherAccessories: false,
+      accessoriesDescription: "",
+    },
+  });
+
   async function onSubmitStep1(values: z.infer<typeof itemDetailsSchema>) {
     setCurrentStep(2);
   }
 
   async function onSubmitStep2(values: z.infer<typeof deviceDetailsSchema>) {
     try {
-      await createLoan({
-        type: "pawn",
-        ...values,
-        itemDetails: itemDetailsForm.getValues().itemDetails,
-      });
       setCurrentStep(3);
     } catch (error) {
       console.error("Failed to submit device details:", error);
+    }
+  }
+
+  async function onSubmitStep3(values: z.infer<typeof accessoriesSchema>) {
+    try {
+      await createLoan({
+        type: "pawn",
+        ...values,
+        ...deviceDetailsForm.getValues(),
+        itemDetails: itemDetailsForm.getValues().itemDetails,
+      });
+      setCurrentStep(4);
+    } catch (error) {
+      console.error("Failed to submit accessories details:", error);
     }
   }
 
@@ -386,7 +412,116 @@ export default function PawnLoanForm() {
         </Form>
       )}
 
-      {/*Step 3 and 4 would be added here similarly.  This example only shows steps 1 and 2.*/}
+      {currentStep === 3 && (
+        <Form {...accessoriesForm}>
+          <form onSubmit={accessoriesForm.handleSubmit(onSubmitStep3)} className="space-y-8">
+            <div className="space-y-4">
+              <div>
+                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 3 of 4</h1>
+                <p className="text-muted-foreground mt-2">
+                  Please provide information about device accessories
+                </p>
+              </div>
+
+              <ClientInfoCard />
+
+              <div className="space-y-6">
+                <FormField
+                  control={accessoriesForm.control}
+                  name="hasCharger"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Charger</FormLabel>
+                        <FormDescription>
+                          Does the device come with a charger?
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={accessoriesForm.control}
+                  name="hasOtherAccessories"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Other Accessories</FormLabel>
+                        <FormDescription>
+                          Are there any other accessories included?
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {accessoriesForm.watch("hasOtherAccessories") && (
+                  <FormField
+                    control={accessoriesForm.control}
+                    name="accessoriesDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Accessories Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Please describe all included accessories..."
+                            className="min-h-[100px] resize-y"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <Button
+                type="submit"
+                className="w-full md:w-auto md:min-w-[200px] h-12"
+                size="lg"
+              >
+                Continue to Step 4
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                Cancel Application
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
+
+      {currentStep === 4 && (
+        <div>
+          <h1>Step 4 of 4 - Loan Summary</h1>
+          <p>This is a placeholder for the loan summary.  You would typically display the loan details gathered from previous steps here.</p>
+          <Button type="button" onClick={handleCancel}>
+            Finish
+          </Button>
+        </div>
+      )}
+
 
       <Sheet open={searchOpen} onOpenChange={setSearchOpen}>
         <SheetContent className="w-full sm:max-w-xl">
