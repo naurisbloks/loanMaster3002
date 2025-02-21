@@ -76,7 +76,7 @@ export default function Dashboard() {
 
   const StatCard = ({ title, value, icon: Icon, subtitle, colors }: any) => (
     <Card className="overflow-hidden relative">
-      <AnimatedGradient colors={colors} speed={5} blur="light" />
+      <AnimatedGradient colors={colors} speed={15} blur="light" />
       <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10 bg-background/50 backdrop-blur-sm">
         <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
