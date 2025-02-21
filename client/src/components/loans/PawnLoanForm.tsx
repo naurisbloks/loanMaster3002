@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -26,7 +26,7 @@ import { useLoanStore } from "@/stores/loanStore";
 import { useClientStore } from "@/stores/clientStore";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Client } from "@/types";
 import ClientDetails from "@/components/clients/ClientDetails";
 
@@ -53,9 +53,7 @@ const accessoriesSchema = z.object({
 });
 
 const picturesSchema = z.object({
-  frontImage: z.instanceof(File, { message: "Front image is required" }),
-  backImage: z.instanceof(File, { message: "Back image is required" }),
-  additionalImages: z.array(z.instanceof(File)).optional(),
+  images: z.array(z.instanceof(File)).min(1, "At least one image is required"),
 });
 
 export default function PawnLoanForm() {
@@ -68,6 +66,7 @@ export default function PawnLoanForm() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clientDetailsOpen, setClientDetailsOpen] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const itemDetailsForm = useForm<z.infer<typeof itemDetailsSchema>>({
     resolver: zodResolver(itemDetailsSchema),
@@ -102,7 +101,16 @@ export default function PawnLoanForm() {
 
   const picturesForm = useForm<z.infer<typeof picturesSchema>>({
     resolver: zodResolver(picturesSchema),
+    defaultValues: {
+      images: [],
+    },
   });
+
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(URL.revokeObjectURL);
+    };
+  }, [imagePreviews]);
 
   async function onSubmitStep1(values: z.infer<typeof itemDetailsSchema>) {
     setCurrentStep(2);
@@ -128,7 +136,7 @@ export default function PawnLoanForm() {
     try {
       await createLoan({
         type: "pawn",
-        ...values,
+        images: values.images,
         ...accessoriesForm.getValues(),
         ...deviceDetailsForm.getValues(),
         itemDetails: itemDetailsForm.getValues().itemDetails,
@@ -206,6 +214,27 @@ export default function PawnLoanForm() {
       </div>
     )
   );
+
+  const handleImageAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const currentImages = picturesForm.getValues().images || [];
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+
+    picturesForm.setValue('images', [...currentImages, ...files]);
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+  };
+
+  const handleImageRemove = (index: number) => {
+    const currentImages = picturesForm.getValues().images;
+    const newImages = currentImages.filter((_, i) => i !== index);
+
+    // Revoke the URL for the removed preview
+    URL.revokeObjectURL(imagePreviews[index]);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+
+    picturesForm.setValue('images', newImages);
+    setImagePreviews(newPreviews);
+  };
 
   return (
     <>
@@ -538,89 +567,59 @@ export default function PawnLoanForm() {
               <div>
                 <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 4 of 5</h1>
                 <p className="text-muted-foreground mt-2">
-                  Please provide pictures of the device
+                  Please provide pictures of the item
                 </p>
               </div>
 
               <ClientInfoCard />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={picturesForm.control}
-                  name="frontImage"
-                  render={({ field: { onChange, value, ...field } }) => (
-                    <FormItem>
-                      <FormLabel>Front Image</FormLabel>
-                      <FormDescription>
-                        Take a clear photo of the front of the device
-                      </FormDescription>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) onChange(file);
-                          }}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={picturesForm.control}
-                  name="backImage"
-                  render={({ field: { onChange, value, ...field } }) => (
-                    <FormItem>
-                      <FormLabel>Back Image</FormLabel>
-                      <FormDescription>
-                        Take a clear photo of the back of the device
-                      </FormDescription>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) onChange(file);
-                          }}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={picturesForm.control}
-                  name="additionalImages"
-                  render={({ field: { onChange, value, ...field } }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Additional Images (Optional)</FormLabel>
-                      <FormDescription>
-                        Add any additional photos of the device
-                      </FormDescription>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files || []);
-                            onChange(files);
-                          }}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={picturesForm.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Item Images</FormLabel>
+                    <FormDescription>
+                      Add clear photos of the item from different angles
+                    </FormDescription>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={preview} className="relative aspect-square">
+                          <img
+                            src={preview}
+                            alt={`Item preview ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-2 right-2 bg-white/80 hover:bg-white/90"
+                            onClick={() => handleImageRemove(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <div className="aspect-square flex items-center justify-center border-2 border-dashed rounded-lg hover:border-primary/50 transition-colors">
+                        <FormControl>
+                          <label className="cursor-pointer w-full h-full flex items-center justify-center">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={handleImageAdd}
+                              multiple
+                            />
+                            <Plus className="h-8 w-8 text-muted-foreground" />
+                          </label>
+                        </FormControl>
+                      </div>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex justify-between items-center">
