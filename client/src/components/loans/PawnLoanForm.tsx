@@ -645,12 +645,102 @@ export default function PawnLoanForm() {
       )}
 
       {currentStep === 5 && (
-        <div>
-          <h1>Step 5 of 5 - Loan Summary</h1>
-          <p>This is a placeholder for the loan summary. You would typically display the loan details gathered from previous steps here.</p>
-          <Button type="button" onClick={handleCancel}>
-            Finish
-          </Button>
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 5 of 5</h1>
+            <p className="text-muted-foreground mt-2">
+              {t("loans.pawn.summary")}
+            </p>
+          </div>
+
+          <ClientInfoCard />
+
+          <div className="space-y-6">
+            {/* Item Details Summary */}
+            <div className="rounded-lg border p-6">
+              <h2 className="text-xl font-semibold mb-4">Item Details</h2>
+              <p className="whitespace-pre-wrap">{itemDetailsForm.getValues().itemDetails}</p>
+            </div>
+
+            {/* Device Specifications Summary */}
+            <div className="rounded-lg border p-6">
+              <h2 className="text-xl font-semibold mb-4">Device Specifications</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(deviceDetailsForm.getValues()).map(([key, value]) => (
+                  value && (
+                    <div key={key} className="flex flex-col">
+                      <span className="text-sm text-muted-foreground capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}
+                      </span>
+                      <span className="font-medium">{value}</span>
+                    </div>
+                  )
+                ))}
+              </div>
+            </div>
+
+            {/* Accessories Summary */}
+            <div className="rounded-lg border p-6">
+              <h2 className="text-xl font-semibold mb-4">Accessories</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">Charger included:</span>
+                  <span className="font-medium">
+                    {accessoriesForm.getValues().hasCharger ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">Other accessories:</span>
+                  <span className="font-medium">
+                    {accessoriesForm.getValues().hasOtherAccessories ? "Yes" : "No"}
+                  </span>
+                </div>
+                {accessoriesForm.getValues().hasOtherAccessories && (
+                  <div>
+                    <span className="text-muted-foreground">Description:</span>
+                    <p className="mt-1 font-medium whitespace-pre-wrap">
+                      {accessoriesForm.getValues().accessoriesDescription}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Images Summary */}
+            <div className="rounded-lg border p-6">
+              <h2 className="text-xl font-semibold mb-4">Item Images</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {imagePreviews.map((preview, index) => (
+                  <div key={preview} className="relative aspect-square">
+                    <img
+                      src={preview}
+                      alt={`Item preview ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <Button
+              type="button"
+              onClick={handleCancel}
+              className="w-full md:w-auto md:min-w-[200px] h-12"
+              size="lg"
+            >
+              Complete Application
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCurrentStep(1)}
+            >
+              Edit Application
+            </Button>
+          </div>
         </div>
       )}
 
