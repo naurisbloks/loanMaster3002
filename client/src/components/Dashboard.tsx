@@ -76,14 +76,14 @@ export default function Dashboard() {
 
   const StatCard = ({ title, value, icon: Icon, subtitle, colors }: any) => (
     <Card className="overflow-hidden relative">
-      <AnimatedGradient colors={colors} speed={0.03} blur="medium" />
-      <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
+      <AnimatedGradient colors={colors} speed={5} blur="light" />
+      <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10 bg-background/50 backdrop-blur-sm">
         <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
         </CardTitle>
         <Icon className="h-4 w-4 text-[#064296]" />
       </CardHeader>
-      <CardContent className="relative z-10">
+      <CardContent className="relative z-10 bg-background/50 backdrop-blur-sm">
         <div className="text-2xl font-bold text-[#064296]">{value}</div>
         {subtitle && (
           <p className="text-xs text-[#2E2E36]/70 mt-1">{subtitle}</p>
