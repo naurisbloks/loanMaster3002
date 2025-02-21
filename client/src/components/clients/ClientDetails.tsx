@@ -28,9 +28,10 @@ interface ClientDetailsProps {
   client: Client | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onClientUpdate?: (client: Client) => void;
 }
 
-export default function ClientDetails({ client, open, onOpenChange }: ClientDetailsProps) {
+export default function ClientDetails({ client, open, onOpenChange, onClientUpdate }: ClientDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const { updateClient } = useClientStore();
 
@@ -53,7 +54,10 @@ export default function ClientDetails({ client, open, onOpenChange }: ClientDeta
       await updateClient(client.id, data);
       setIsEditing(false);
       // Reset form with new values after successful update
-      form.reset(data);
+      const updatedClient = { ...client, ...data };
+      form.reset(updatedClient);
+      // Notify parent component about the update
+      onClientUpdate?.(updatedClient);
     } catch (error) {
       console.error("Failed to update client:", error);
     }

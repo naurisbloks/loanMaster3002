@@ -23,7 +23,7 @@ import { useLoanStore } from "@/stores/loanStore";
 import { useClientStore } from "@/stores/clientStore";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Client } from "@/types";
 import ClientDetails from "@/components/clients/ClientDetails";
 
@@ -73,6 +73,11 @@ export default function PawnLoanForm() {
   const handleClientSelect = (client: Client) => {
     setSelectedClient(client);
     setSearchOpen(false);
+  };
+
+  // Update selected client when client details are updated
+  const handleClientUpdate = (updatedClient: Client) => {
+    setSelectedClient(updatedClient);
   };
 
   return (
@@ -204,6 +209,7 @@ export default function PawnLoanForm() {
         client={selectedClient}
         open={clientDetailsOpen}
         onOpenChange={setClientDetailsOpen}
+        onClientUpdate={handleClientUpdate}
       />
     </>
   );
