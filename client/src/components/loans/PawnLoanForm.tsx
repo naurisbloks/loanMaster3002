@@ -153,14 +153,26 @@ export default function PawnLoanForm() {
   async function onSubmitStep4(values: z.infer<typeof picturesSchema>) {
     try {
       const loanData = {
+        amount: finalValue || 0,
+        term: 12, // Default term
+        interestRate: 5, // Default interest rate
         type: "pawn" as const,
-        images: values.images,
-        ...accessoriesForm.getValues(),
-        ...deviceDetailsForm.getValues(),
+        status: "pending" as const,
         itemDetails: itemDetailsForm.getValues().itemDetails,
+        deviceDetails: deviceDetailsForm.getValues(),
+        accessories: accessoriesForm.getValues(),
+        images: values.images,
+        clientId: selectedClient?.id,
+        valuations: {
+          internal: internalValuation,
+          external: externalValuation,
+          recommended: recommendedValuation,
+          final: finalValue
+        }
       };
+
       await createLoan(loanData);
-      setCurrentStep(5);
+      setLocation("/applications"); // Redirect to applications page
     } catch (error) {
       console.error("Failed to submit pictures:", error);
     }
