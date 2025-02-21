@@ -12,7 +12,8 @@ interface LoanStore {
   updateLoanStatus: (id: number, status: Loan['status']) => Promise<void>;
 }
 
-const mockLoans: Loan[] = [
+// Initial mock data
+const initialLoans: Loan[] = [
   {
     id: 1,
     userId: 1,
@@ -52,16 +53,36 @@ const mockLoans: Loan[] = [
   },
 ];
 
+// Helper function to get loans from localStorage
+const getStoredLoans = (): Loan[] => {
+  try {
+    const storedLoans = localStorage.getItem('loans');
+    return storedLoans ? JSON.parse(storedLoans) : initialLoans;
+  } catch (error) {
+    console.error('Failed to parse loans from localStorage:', error);
+    return initialLoans;
+  }
+};
+
+// Helper function to save loans to localStorage
+const saveLoansToStorage = (loans: Loan[]) => {
+  try {
+    localStorage.setItem('loans', JSON.stringify(loans));
+  } catch (error) {
+    console.error('Failed to save loans to localStorage:', error);
+  }
+};
+
 export const useLoanStore = create<LoanStore>((set) => ({
-  loans: [],
+  loans: getStoredLoans(),
   loading: false,
   error: null,
 
   fetchLoans: async () => {
     try {
       set({ loading: true });
-      // Using mock data instead of API call
-      set({ loans: mockLoans, loading: false });
+      const loans = getStoredLoans();
+      set({ loans, loading: false });
     } catch (error) {
       toast({
         title: "Error",
@@ -75,9 +96,9 @@ export const useLoanStore = create<LoanStore>((set) => ({
   createLoan: async (data: LoanFormData) => {
     try {
       set({ loading: true });
-      // Create a new mock loan
+      const currentLoans = getStoredLoans();
       const newLoan: Loan = {
-        id: mockLoans.length + 1,
+        id: Math.max(0, ...currentLoans.map(loan => loan.id)) + 1,
         userId: 1,
         ...data,
         status: 'pending',
@@ -85,10 +106,13 @@ export const useLoanStore = create<LoanStore>((set) => ({
         updatedAt: new Date().toISOString(),
       };
 
-      set((state) => ({
-        loans: [...state.loans, newLoan],
+      const updatedLoans = [...currentLoans, newLoan];
+      saveLoansToStorage(updatedLoans);
+
+      set({
+        loans: updatedLoans,
         loading: false,
-      }));
+      });
 
       toast({
         title: "Success",
@@ -107,19 +131,22 @@ export const useLoanStore = create<LoanStore>((set) => ({
   updateLoan: async (id: number, data: Partial<Loan>) => {
     try {
       set({ loading: true });
-      // Update loan in mock data
-      set((state) => ({
-        loans: state.loans.map((loan) =>
-          loan.id === id
-            ? {
-                ...loan,
-                ...data,
-                updatedAt: new Date().toISOString(),
-              }
-            : loan
-        ),
+      const currentLoans = getStoredLoans();
+      const updatedLoans = currentLoans.map((loan) =>
+        loan.id === id
+          ? {
+              ...loan,
+              ...data,
+              updatedAt: new Date().toISOString(),
+            }
+          : loan
+      );
+
+      saveLoansToStorage(updatedLoans);
+      set({
+        loans: updatedLoans,
         loading: false,
-      }));
+      });
 
       toast({
         title: "Success",
@@ -138,15 +165,18 @@ export const useLoanStore = create<LoanStore>((set) => ({
   updateLoanStatus: async (id: number, status: Loan['status']) => {
     try {
       set({ loading: true });
-      // Update mock loan status
-      set((state) => ({
-        loans: state.loans.map((loan) =>
-          loan.id === id 
-            ? { ...loan, status, updatedAt: new Date().toISOString() } 
-            : loan
-        ),
+      const currentLoans = getStoredLoans();
+      const updatedLoans = currentLoans.map((loan) =>
+        loan.id === id 
+          ? { ...loan, status, updatedAt: new Date().toISOString() } 
+          : loan
+      );
+
+      saveLoansToStorage(updatedLoans);
+      set({
+        loans: updatedLoans,
         loading: false,
-      }));
+      });
 
       toast({
         title: "Success",
