@@ -152,8 +152,20 @@ export default function PawnLoanForm() {
 
   async function onSubmitStep4(values: z.infer<typeof picturesSchema>) {
     try {
+      setCurrentStep(5);
+    } catch (error) {
+      console.error("Failed to submit pictures:", error);
+    }
+  }
+
+  const handleSubmitApplication = async () => {
+    try {
+      if (!selectedClient || finalValue === null) {
+        return;
+      }
+
       const loanData = {
-        amount: finalValue || 0,
+        amount: finalValue,
         term: 12, // Default term
         interestRate: 5, // Default interest rate
         type: "pawn" as const,
@@ -161,8 +173,8 @@ export default function PawnLoanForm() {
         itemDetails: itemDetailsForm.getValues().itemDetails,
         deviceDetails: deviceDetailsForm.getValues(),
         accessories: accessoriesForm.getValues(),
-        images: values.images,
-        clientId: selectedClient?.id,
+        images: picturesForm.getValues().images,
+        clientId: selectedClient.id,
         valuations: {
           internal: internalValuation,
           external: externalValuation,
@@ -174,9 +186,9 @@ export default function PawnLoanForm() {
       await createLoan(loanData);
       setLocation("/applications"); // Redirect to applications page
     } catch (error) {
-      console.error("Failed to submit pictures:", error);
+      console.error("Failed to create loan application:", error);
     }
-  }
+  };
 
   const handleCancel = () => {
     setLocation("/loans");
@@ -818,7 +830,7 @@ export default function PawnLoanForm() {
             <div className="space-y-2">
               <Button
                 type="button"
-                onClick={handleCancel}
+                onClick={handleSubmitApplication}
                 className="w-full md:w-auto md:min-w-[200px] h-12"
                 size="lg"
                 disabled={finalValue === null || !selectedClient}
@@ -898,14 +910,12 @@ export default function PawnLoanForm() {
                   <div key={item.id} className="rounded-lg border p-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium">{item.manufacturer} {item.model}</h4>
-                        <p className="text-sm text-muted-foreground">{item.deviceType}</p>
+                        <h4 className="font-medium">{item.title}</h4>
+                        <p className="text-sm text-muted-foreground">{item.source}</p>
                       </div>
                       <div className="text-right">
-                        <div className="font-medium">${item.value}</div>
-                        <p className="text-sm text-muted-foreground">
-                          {format(new Date(item.date), 'MMM d, yyyy')}
-                        </p>
+                        <div className="font-medium">${item.price}</div>
+                        <p className="text-sm text-muted-foreground">{item.condition}</p>
                       </div>
                     </div>
                   </div>
@@ -986,7 +996,11 @@ export default function PawnLoanForm() {
         onOpenChange={setClientDetailsOpen}
         onClientUpdate={handleClientUpdate}
       />
-      <CreateClientForm open={clientCreateOpen} onOpenChange={setClientCreateOpen} onSuccess={handleClientCreated} />
+      <CreateClientForm
+        open={clientCreateOpen}
+        onOpenChange={setClientCreateOpen}
+        onSuccess={handleClientCreated}
+        />
     </>
   );
 }
