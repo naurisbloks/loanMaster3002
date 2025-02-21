@@ -56,11 +56,11 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   createClient: async (data) => {
     try {
       set({ loading: true });
-      // Create a new mock client
+      // Create a new mock client with proper date format
       const newClient: Client = {
-        id: mockClients.length + 1,
+        id: get().clients.length + 1,
         ...data,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(), // Ensure consistent ISO string format
       };
 
       set((state) => ({

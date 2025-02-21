@@ -6,7 +6,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Client } from "@/types";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -60,6 +60,18 @@ export default function ClientDetails({ client, open, onOpenChange, onClientUpda
       onClientUpdate?.(updatedClient);
     } catch (error) {
       console.error("Failed to update client:", error);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = parseISO(dateString);
+      if (!isValid(date)) {
+        return "Invalid date";
+      }
+      return format(date, "PPP");
+    } catch (error) {
+      return "Invalid date";
     }
   };
 
@@ -125,7 +137,7 @@ export default function ClientDetails({ client, open, onOpenChange, onClientUpda
               <div>
                 <p className="text-sm font-medium">Created On</p>
                 <p className="text-sm">
-                  {format(new Date(client.createdAt), "PPP")}
+                  {formatDate(client.createdAt)}
                 </p>
               </div>
             </div>
