@@ -41,7 +41,12 @@
       "new": "Jauns Lombarda Kredīts",
       "itemDetails": "Priekšmeta Informācija",
       "itemDetailsDescription": "Lūdzu, sniedziet detalizētu informāciju par priekšmetu (ražotājs, modelis, izmērs, tehniskie parametri utt.)",
-      "submit": "Iesniegt Lombarda Kredītu"
+      "submit": "Tālāk",
+      "addClient": "Pievienot Esošu Klientu",
+      "searchClient": "Meklēt Klientu",
+      "searchPlaceholder": "Meklēt pēc vārda, e-pasta vai tālruņa",
+      "noClientsFound": "Klienti nav atrasti",
+      "selectClient": "Izvēlēties Klientu"
     }
   },
   "clients": {

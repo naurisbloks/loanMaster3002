@@ -41,7 +41,12 @@
       "new": "Nauja Užstato Paskola",
       "itemDetails": "Daikto Informacija",
       "itemDetailsDescription": "Pateikite išsamią informaciją apie daiktą (gamintojas, modelis, dydis, techniniai parametrai ir kt.)",
-      "submit": "Pateikti Užstato Paskolą"
+      "submit": "Tęsti",
+      "addClient": "Pridėti Esamą Klientą",
+      "searchClient": "Ieškoti Kliento",
+      "searchPlaceholder": "Ieškoti pagal vardą, el. paštą arba telefoną",
+      "noClientsFound": "Klientų nerasta",
+      "selectClient": "Pasirinkti Klientą"
     }
   },
   "clients": {

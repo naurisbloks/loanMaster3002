@@ -44,7 +44,12 @@
       "new": "New Pawn Loan",
       "itemDetails": "Item Details",
       "itemDetailsDescription": "Please provide detailed information about the item (manufacturer, model, size, technical parameters, etc.)",
-      "submit": "Submit Pawn Loan"
+      "submit": "Continue",
+      "addClient": "Add Existing Client",
+      "searchClient": "Search Client",
+      "searchPlaceholder": "Search by name, email or phone",
+      "noClientsFound": "No clients found",
+      "selectClient": "Select Client"
     }
   },
   "clients": {
