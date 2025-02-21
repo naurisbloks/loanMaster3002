@@ -14,7 +14,8 @@
     "confirm": "Patvirtinti",
     "delete": "Ištrinti",
     "created": "Sukurta",
-    "updated": "Atnaujinta"
+    "updated": "Atnaujinta",
+    "remove": "Pašalinti"
   },
   "auth": {
     "signIn": "Prisijungti",
@@ -46,7 +47,8 @@
       "searchClient": "Ieškoti Kliento",
       "searchPlaceholder": "Ieškoti pagal vardą, el. paštą arba telefoną",
       "noClientsFound": "Klientų nerasta",
-      "selectClient": "Pasirinkti Klientą"
+      "selectClient": "Pasirinkti Klientą",
+      "removeClient": "Pašalinti Klientą"
     }
   },
   "clients": {

@@ -80,6 +80,11 @@ export default function PawnLoanForm() {
     setSelectedClient(updatedClient);
   };
 
+  // Remove selected client
+  const handleRemoveClient = () => {
+    setSelectedClient(null);
+  };
+
   return (
     <>
       <Form {...form}>
@@ -95,7 +100,6 @@ export default function PawnLoanForm() {
             {selectedClient && (
               <div 
                 className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
-                onClick={() => setClientDetailsOpen(true)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-8">
@@ -112,7 +116,23 @@ export default function PawnLoanForm() {
                       <span className="text-muted-foreground">{selectedClient.address}</span>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm">View Details</Button>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setClientDetailsOpen(true)}
+                    >
+                      View Details
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={handleRemoveClient}
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    >
+                      {t("loans.pawn.removeClient")}
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

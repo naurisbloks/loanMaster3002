@@ -14,7 +14,8 @@
     "confirm": "Apstiprināt",
     "delete": "Dzēst",
     "created": "Izveidots",
-    "updated": "Atjaunināts"
+    "updated": "Atjaunināts",
+    "remove": "Noņemt"
   },
   "auth": {
     "signIn": "Ieiet",
@@ -46,7 +47,8 @@
       "searchClient": "Meklēt Klientu",
       "searchPlaceholder": "Meklēt pēc vārda, e-pasta vai tālruņa",
       "noClientsFound": "Klienti nav atrasti",
-      "selectClient": "Izvēlēties Klientu"
+      "selectClient": "Izvēlēties Klientu",
+      "removeClient": "Noņemt Klientu"
     }
   },
   "clients": {

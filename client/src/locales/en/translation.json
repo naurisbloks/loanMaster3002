@@ -14,7 +14,8 @@
     "confirm": "Confirm",
     "delete": "Delete",
     "created": "Created On",
-    "updated": "Last Updated"
+    "updated": "Last Updated",
+    "remove": "Remove"
   },
   "auth": {
     "signIn": "Sign in",
@@ -49,7 +50,8 @@
       "searchClient": "Search Client",
       "searchPlaceholder": "Search by name, email or phone",
       "noClientsFound": "No clients found",
-      "selectClient": "Select Client"
+      "selectClient": "Select Client",
+      "removeClient": "Remove Client"
     }
   },
   "clients": {
