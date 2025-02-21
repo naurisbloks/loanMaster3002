@@ -99,7 +99,7 @@ export const useLoanStore = create<LoanStore>((set) => ({
       const currentLoans = getStoredLoans();
       const newLoan: Loan = {
         id: Math.max(0, ...currentLoans.map(loan => loan.id)) + 1,
-        userId: 1,
+        userId: 1, // Default user ID since we're not using authentication
         ...data,
         status: 'pending',
         createdAt: new Date().toISOString(),
