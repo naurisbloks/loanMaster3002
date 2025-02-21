@@ -548,7 +548,7 @@ export default function PawnLoanForm() {
                 <FormField
                   control={picturesForm.control}
                   name="frontImage"
-                  render={({ field: { onChange, ...field } }) => (
+                  render={({ field: { onChange, value, ...field } }) => (
                     <FormItem>
                       <FormLabel>Front Image</FormLabel>
                       <FormDescription>
@@ -573,7 +573,7 @@ export default function PawnLoanForm() {
                 <FormField
                   control={picturesForm.control}
                   name="backImage"
-                  render={({ field: { onChange, ...field } }) => (
+                  render={({ field: { onChange, value, ...field } }) => (
                     <FormItem>
                       <FormLabel>Back Image</FormLabel>
                       <FormDescription>
@@ -598,7 +598,7 @@ export default function PawnLoanForm() {
                 <FormField
                   control={picturesForm.control}
                   name="additionalImages"
-                  render={({ field: { onChange, ...field } }) => (
+                  render={({ field: { onChange, value, ...field } }) => (
                     <FormItem className="col-span-2">
                       <FormLabel>Additional Images (Optional)</FormLabel>
                       <FormDescription>
