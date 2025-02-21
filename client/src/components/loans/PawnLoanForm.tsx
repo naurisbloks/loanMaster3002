@@ -29,6 +29,9 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { Client } from "@/types";
 import ClientDetails from "@/components/clients/ClientDetails";
+import { useValuationStore } from "@/stores/valuationStore";
+import { InfoIcon } from "lucide-react";
+import { format } from 'date-fns';
 
 const itemDetailsSchema = z.object({
   itemDetails: z.string().min(1, "Item details are required"),
@@ -67,6 +70,20 @@ export default function PawnLoanForm() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clientDetailsOpen, setClientDetailsOpen] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const {
+    internalValuation,
+    externalValuation,
+    recommendedValuation,
+    finalValue,
+    similarDevices,
+    scrapedItems,
+    internalValuationOpen,
+    externalValuationOpen,
+    setFinalValue,
+    setInternalValuationOpen,
+    setExternalValuationOpen,
+  } = useValuationStore();
+
 
   const itemDetailsForm = useForm<z.infer<typeof itemDetailsSchema>>({
     resolver: zodResolver(itemDetailsSchema),
@@ -134,13 +151,14 @@ export default function PawnLoanForm() {
 
   async function onSubmitStep4(values: z.infer<typeof picturesSchema>) {
     try {
-      await createLoan({
-        type: "pawn",
+      const loanData = {
+        type: "pawn" as const, 
         images: values.images,
         ...accessoriesForm.getValues(),
         ...deviceDetailsForm.getValues(),
         itemDetails: itemDetailsForm.getValues().itemDetails,
-      });
+      };
+      await createLoan(loanData);
       setCurrentStep(5);
     } catch (error) {
       console.error("Failed to submit pictures:", error);
@@ -228,7 +246,6 @@ export default function PawnLoanForm() {
     const currentImages = picturesForm.getValues().images;
     const newImages = currentImages.filter((_, i) => i !== index);
 
-    // Revoke the URL for the removed preview
     URL.revokeObjectURL(imagePreviews[index]);
     const newPreviews = imagePreviews.filter((_, i) => i !== index);
 
@@ -656,15 +673,12 @@ export default function PawnLoanForm() {
           <ClientInfoCard />
 
           <div className="grid gap-4">
-            {/* Item and Device Details */}
             <div className="grid md:grid-cols-2 gap-4">
-              {/* Item Details */}
               <div className="rounded-lg border p-4">
                 <h3 className="font-semibold mb-2">Item Details</h3>
                 <p className="text-sm whitespace-pre-wrap">{itemDetailsForm.getValues().itemDetails}</p>
               </div>
 
-              {/* Device Specifications */}
               <div className="rounded-lg border p-4">
                 <h3 className="font-semibold mb-2">Device Specifications</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
@@ -683,9 +697,7 @@ export default function PawnLoanForm() {
               </div>
             </div>
 
-            {/* Accessories and Images */}
             <div className="grid md:grid-cols-2 gap-4">
-              {/* Accessories */}
               <div className="rounded-lg border p-4">
                 <h3 className="font-semibold mb-2">Accessories</h3>
                 <div className="space-y-2 text-sm">
@@ -716,7 +728,6 @@ export default function PawnLoanForm() {
                 </div>
               </div>
 
-              {/* Images */}
               <div className="rounded-lg border p-4">
                 <h3 className="font-semibold mb-2">Item Images</h3>
                 <div className="grid grid-cols-3 gap-2">
@@ -732,6 +743,57 @@ export default function PawnLoanForm() {
                 </div>
               </div>
             </div>
+
+            <div className="rounded-lg border p-4">
+              <h3 className="font-semibold mb-4">Valuations</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <div>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between"
+                      onClick={() => setInternalValuationOpen(true)}
+                    >
+                      <div className="text-left">
+                        <div className="text-sm text-muted-foreground">Internal Valuation</div>
+                        <div className="font-medium">${internalValuation}</div>
+                      </div>
+                      <InfoIcon className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+
+                  <div>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between"
+                      onClick={() => setExternalValuationOpen(true)}
+                    >
+                      <div className="text-left">
+                        <div className="text-sm text-muted-foreground">External Valuation</div>
+                        <div className="font-medium">${externalValuation}</div>
+                      </div>
+                      <InfoIcon className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+
+                  <div>
+                    <div className="text-sm text-muted-foreground">Recommended Value</div>
+                    <div className="font-medium text-lg">${recommendedValuation}</div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm text-muted-foreground">Final Value</div>
+                  <Input
+                    type="number"
+                    value={finalValue || ''}
+                    onChange={(e) => setFinalValue(e.target.value ? Number(e.target.value) : null)}
+                    placeholder="Enter final value"
+                    className="text-lg"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-between items-center pt-4">
@@ -740,6 +802,7 @@ export default function PawnLoanForm() {
               onClick={handleCancel}
               className="w-full md:w-auto md:min-w-[200px] h-12"
               size="lg"
+              disabled={finalValue === null}
             >
               Complete Application
             </Button>
@@ -752,6 +815,64 @@ export default function PawnLoanForm() {
               Edit Application
             </Button>
           </div>
+
+          <Sheet open={internalValuationOpen} onOpenChange={setInternalValuationOpen}>
+            <SheetContent className="w-full sm:max-w-xl">
+              <SheetHeader>
+                <SheetTitle>Similar Devices</SheetTitle>
+                <SheetDescription>
+                  Previously pawned similar devices and their valuations
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 space-y-4">
+                {similarDevices.map((device) => (
+                  <div key={device.id} className="rounded-lg border p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-medium">{device.manufacturer} {device.model}</h4>
+                        <p className="text-sm text-muted-foreground">{device.deviceType}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium">${device.value}</div>
+                        <p className="text-sm text-muted-foreground">
+                          {format(new Date(device.date), 'MMM d, yyyy')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Sheet open={externalValuationOpen} onOpenChange={setExternalValuationOpen}>
+            <SheetContent className="w-full sm:max-w-xl">
+              <SheetHeader>
+                <SheetTitle>Market Prices</SheetTitle>
+                <SheetDescription>
+                  Current market prices for similar devices
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 space-y-4">
+                {scrapedItems.map((item) => (
+                  <div key={item.id} className="rounded-lg border p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-medium">{item.manufacturer} {item.model}</h4>
+                        <p className="text-sm text-muted-foreground">{item.deviceType}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium">${item.value}</div>
+                        <p className="text-sm text-muted-foreground">
+                          {format(new Date(item.date), 'MMM d, yyyy')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       )}
 
