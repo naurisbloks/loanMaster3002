@@ -8,6 +8,7 @@ interface ClientStore {
   error: string | null;
   fetchClients: () => Promise<void>;
   updateClient: (id: number, data: Partial<Client>) => Promise<void>;
+  createClient: (data: Omit<Client, 'id' | 'createdAt'>) => Promise<Client>;
 }
 
 // Mock data for initial development
@@ -32,7 +33,7 @@ const mockClients: Client[] = [
   },
 ];
 
-export const useClientStore = create<ClientStore>((set) => ({
+export const useClientStore = create<ClientStore>((set, get) => ({
   clients: [],
   loading: false,
   error: null,
@@ -49,6 +50,38 @@ export const useClientStore = create<ClientStore>((set) => ({
         variant: "destructive",
       });
       set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  createClient: async (data) => {
+    try {
+      set({ loading: true });
+      // Create a new mock client
+      const newClient: Client = {
+        id: mockClients.length + 1,
+        ...data,
+        createdAt: new Date().toISOString(),
+      };
+
+      set((state) => ({
+        clients: [...state.clients, newClient],
+        loading: false,
+      }));
+
+      toast({
+        title: "Success",
+        description: "Client created successfully",
+      });
+
+      return newClient;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
+      throw error;
     }
   },
 

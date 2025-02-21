@@ -32,6 +32,7 @@ import ClientDetails from "@/components/clients/ClientDetails";
 import { useValuationStore } from "@/stores/valuationStore";
 import { InfoIcon } from "lucide-react";
 import { format } from 'date-fns';
+import CreateClientForm from "@/components/clients/CreateClientForm";
 
 const itemDetailsSchema = z.object({
   itemDetails: z.string().min(1, "Item details are required"),
@@ -83,7 +84,7 @@ export default function PawnLoanForm() {
     setInternalValuationOpen,
     setExternalValuationOpen,
   } = useValuationStore();
-
+  const [clientCreateOpen, setClientCreateOpen] = useState(false);
 
   const itemDetailsForm = useForm<z.infer<typeof itemDetailsSchema>>({
     resolver: zodResolver(itemDetailsSchema),
@@ -152,7 +153,7 @@ export default function PawnLoanForm() {
   async function onSubmitStep4(values: z.infer<typeof picturesSchema>) {
     try {
       const loanData = {
-        type: "pawn" as const, 
+        type: "pawn" as const,
         images: values.images,
         ...accessoriesForm.getValues(),
         ...deviceDetailsForm.getValues(),
@@ -251,6 +252,11 @@ export default function PawnLoanForm() {
 
     picturesForm.setValue('images', newImages);
     setImagePreviews(newPreviews);
+  };
+
+  const handleClientCreated = (client: Client) => {
+    setSelectedClient(client);
+    setClientCreateOpen(false);
   };
 
   return (
@@ -901,42 +907,62 @@ export default function PawnLoanForm() {
       <Sheet open={searchOpen} onOpenChange={setSearchOpen}>
         <SheetContent className="w-full sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>{t("loans.pawn.searchClient")}</SheetTitle>
+            <SheetTitle>Select Client</SheetTitle>
             <SheetDescription>
-              {t("loans.pawn.searchPlaceholder")}
+              Search and select a client for the loan application
             </SheetDescription>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <Input
-              placeholder={t("loans.pawn.searchPlaceholder")}
+              placeholder="Search clients..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="mb-4"
             />
             <div className="space-y-2">
-              {filteredClients.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  {t("loans.pawn.noClientsFound")}
-                </p>
-              ) : (
-                filteredClients.map((client) => (
-                  <Button
-                    key={client.id}
-                    variant="outline"
-                    className="w-full justify-start text-left h-auto py-3"
-                    onClick={() => handleClientSelect(client)}
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {client.firstName} {client.lastName}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {client.email} • {client.phone}
-                      </p>
+              {filteredClients.map((client) => (
+                <div
+                  key={client.id}
+                  className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => handleClientSelect(client)}
+                >
+                  <div className="flex flex-col gap-1">
+                    <div className="font-medium">
+                      {client.firstName} {client.lastName}
                     </div>
-                  </Button>
-                ))
-              )}
+                    <div className="text-sm text-muted-foreground">
+                      {client.email}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {client.phone}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {filteredClients.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">No clients found</p>
+                <Button
+                  onClick={() => {
+                    setSearchOpen(false);
+                    setClientCreateOpen(true);
+                  }}
+                >
+                  Create New Client
+                </Button>
+              </div>
+            )}
+            <div className="flex justify-center pt-4 border-t">
+              <Button
+                onClick={() => {
+                  setSearchOpen(false);
+                  setClientCreateOpen(true);
+                }}
+                variant="outline"
+              >
+                Create New Client
+              </Button>
             </div>
           </div>
         </SheetContent>
@@ -948,6 +974,7 @@ export default function PawnLoanForm() {
         onOpenChange={setClientDetailsOpen}
         onClientUpdate={handleClientUpdate}
       />
+      <CreateClientForm open={clientCreateOpen} onOpenChange={setClientCreateOpen} onSuccess={handleClientCreated} />
     </>
   );
 }
