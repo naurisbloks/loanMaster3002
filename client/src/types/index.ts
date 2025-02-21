@@ -16,7 +16,6 @@ export interface Client {
 
 export interface Loan {
   id: number;
-  userId: number;
   type: 'pawn' | 'consumer' | 'retail';
   amount: number;
   status: 'pending' | 'approved' | 'rejected' | 'active' | 'closed';
