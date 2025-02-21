@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -148,11 +149,12 @@ export default function PawnLoanForm() {
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={handleRemoveClient}
               className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              title={t("loans.pawn.removeClient")}
             >
-              {t("loans.pawn.removeClient")}
+              <X className="h-4 w-4" />
             </Button>
           </div>
         </div>
