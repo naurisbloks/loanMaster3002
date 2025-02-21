@@ -27,7 +27,11 @@ export default function ApplicationList() {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
+    // Fetch loans when component mounts
     fetchLoans();
+    // Also set up a polling interval to check for new applications
+    const interval = setInterval(fetchLoans, 5000);
+    return () => clearInterval(interval);
   }, [fetchLoans]);
 
   // Filter only pending applications
@@ -41,6 +45,8 @@ export default function ApplicationList() {
   const handleStatusChange = async (e: React.MouseEvent, id: number, status: Loan['status']) => {
     e.stopPropagation();
     await updateLoanStatus(id, status);
+    // Refetch loans after status update
+    fetchLoans();
   };
 
   return (

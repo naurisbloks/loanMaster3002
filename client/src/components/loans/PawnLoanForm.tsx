@@ -61,7 +61,7 @@ const picturesSchema = z.object({
 });
 
 export default function PawnLoanForm() {
-  const { createLoan } = useLoanStore();
+  const { createLoan, fetchLoans } = useLoanStore(); // Assuming fetchLoans exists in useLoanStore
   const { clients, fetchClients } = useClientStore();
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
@@ -184,6 +184,8 @@ export default function PawnLoanForm() {
       };
 
       await createLoan(loanData);
+      // Immediately fetch updated loans before redirecting
+      await fetchLoans();
       setLocation("/applications"); // Redirect to applications page
     } catch (error) {
       console.error("Failed to create loan application:", error);
@@ -990,8 +992,7 @@ export default function PawnLoanForm() {
         </SheetContent>
       </Sheet>
 
-      <ClientDetails
-        client={selectedClient}
+      <ClientDetails        client={selectedClient}
         open={clientDetailsOpen}
         onOpenChange={setClientDetailsOpen}
         onClientUpdate={handleClientUpdate}
@@ -1000,7 +1001,7 @@ export default function PawnLoanForm() {
         open={clientCreateOpen}
         onOpenChange={setClientCreateOpen}
         onSuccess={handleClientCreated}
-        />
+      />
     </>
   );
 }
