@@ -52,6 +52,12 @@ const accessoriesSchema = z.object({
   accessoriesDescription: z.string().optional().or(z.string().min(1, "Please describe the accessories")),
 });
 
+const picturesSchema = z.object({
+  frontImage: z.instanceof(File, { message: "Front image is required" }),
+  backImage: z.instanceof(File, { message: "Back image is required" }),
+  additionalImages: z.array(z.instanceof(File)).optional(),
+});
+
 export default function PawnLoanForm() {
   const { createLoan } = useLoanStore();
   const { clients, fetchClients } = useClientStore();
@@ -94,6 +100,10 @@ export default function PawnLoanForm() {
     },
   });
 
+  const picturesForm = useForm<z.infer<typeof picturesSchema>>({
+    resolver: zodResolver(picturesSchema),
+  });
+
   async function onSubmitStep1(values: z.infer<typeof itemDetailsSchema>) {
     setCurrentStep(2);
   }
@@ -108,15 +118,24 @@ export default function PawnLoanForm() {
 
   async function onSubmitStep3(values: z.infer<typeof accessoriesSchema>) {
     try {
-      await createLoan({
-        type: "pawn",
-        ...values,
-        ...deviceDetailsForm.getValues(),
-        itemDetails: itemDetailsForm.getValues().itemDetails,
-      });
       setCurrentStep(4);
     } catch (error) {
       console.error("Failed to submit accessories details:", error);
+    }
+  }
+
+  async function onSubmitStep4(values: z.infer<typeof picturesSchema>) {
+    try {
+      await createLoan({
+        type: "pawn",
+        ...values,
+        ...accessoriesForm.getValues(),
+        ...deviceDetailsForm.getValues(),
+        itemDetails: itemDetailsForm.getValues().itemDetails,
+      });
+      setCurrentStep(5);
+    } catch (error) {
+      console.error("Failed to submit pictures:", error);
     }
   }
 
@@ -195,7 +214,7 @@ export default function PawnLoanForm() {
           <form onSubmit={itemDetailsForm.handleSubmit(onSubmitStep1)} className="space-y-8">
             <div className="space-y-4">
               <div>
-                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 1 of 4</h1>
+                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 1 of 5</h1>
                 <p className="text-muted-foreground mt-2">
                   {t("loans.pawn.itemDetailsDescription")}
                 </p>
@@ -253,7 +272,7 @@ export default function PawnLoanForm() {
           <form onSubmit={deviceDetailsForm.handleSubmit(onSubmitStep2)} className="space-y-8">
             <div className="space-y-4">
               <div>
-                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 2 of 4</h1>
+                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 2 of 5</h1>
                 <p className="text-muted-foreground mt-2">
                   Please provide detailed information about the device
                 </p>
@@ -417,7 +436,7 @@ export default function PawnLoanForm() {
           <form onSubmit={accessoriesForm.handleSubmit(onSubmitStep3)} className="space-y-8">
             <div className="space-y-4">
               <div>
-                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 3 of 4</h1>
+                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 3 of 5</h1>
                 <p className="text-muted-foreground mt-2">
                   Please provide information about device accessories
                 </p>
@@ -513,15 +532,128 @@ export default function PawnLoanForm() {
       )}
 
       {currentStep === 4 && (
+        <Form {...picturesForm}>
+          <form onSubmit={picturesForm.handleSubmit(onSubmitStep4)} className="space-y-8">
+            <div className="space-y-4">
+              <div>
+                <h1 className="text-2xl font-bold">{t("loans.pawn.new")} - Step 4 of 5</h1>
+                <p className="text-muted-foreground mt-2">
+                  Please provide pictures of the device
+                </p>
+              </div>
+
+              <ClientInfoCard />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={picturesForm.control}
+                  name="frontImage"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Front Image</FormLabel>
+                      <FormDescription>
+                        Take a clear photo of the front of the device
+                      </FormDescription>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) onChange(file);
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={picturesForm.control}
+                  name="backImage"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Back Image</FormLabel>
+                      <FormDescription>
+                        Take a clear photo of the back of the device
+                      </FormDescription>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) onChange(file);
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={picturesForm.control}
+                  name="additionalImages"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Additional Images (Optional)</FormLabel>
+                      <FormDescription>
+                        Add any additional photos of the device
+                      </FormDescription>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            onChange(files);
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <Button
+                type="submit"
+                className="w-full md:w-auto md:min-w-[200px] h-12"
+                size="lg"
+              >
+                Continue to Summary
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                Cancel Application
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
+
+      {currentStep === 5 && (
         <div>
-          <h1>Step 4 of 4 - Loan Summary</h1>
-          <p>This is a placeholder for the loan summary.  You would typically display the loan details gathered from previous steps here.</p>
+          <h1>Step 5 of 5 - Loan Summary</h1>
+          <p>This is a placeholder for the loan summary. You would typically display the loan details gathered from previous steps here.</p>
           <Button type="button" onClick={handleCancel}>
             Finish
           </Button>
         </div>
       )}
-
 
       <Sheet open={searchOpen} onOpenChange={setSearchOpen}>
         <SheetContent className="w-full sm:max-w-xl">
