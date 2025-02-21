@@ -797,23 +797,45 @@ export default function PawnLoanForm() {
           </div>
 
           <div className="flex justify-between items-center pt-4">
-            <Button
-              type="button"
-              onClick={handleCancel}
-              className="w-full md:w-auto md:min-w-[200px] h-12"
-              size="lg"
-              disabled={finalValue === null}
-            >
-              Complete Application
-            </Button>
+            <div className="space-y-2">
+              <Button
+                type="button"
+                onClick={handleCancel}
+                className="w-full md:w-auto md:min-w-[200px] h-12"
+                size="lg"
+                disabled={finalValue === null || !selectedClient}
+              >
+                Complete Application
+              </Button>
+              {(!selectedClient || finalValue === null) && (
+                <p className="text-sm text-red-500">
+                  {!selectedClient && "Please add a client. "}
+                  {finalValue === null && "Please set a final value."}
+                </p>
+              )}
+            </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setCurrentStep(1)}
-            >
-              Edit Application
-            </Button>
+            <div className="space-x-2 flex items-center">
+              {!selectedClient && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    fetchClients();
+                    setSearchOpen(true);
+                  }}
+                >
+                  Add Client
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCurrentStep(1)}
+              >
+                Edit Application
+              </Button>
+            </div>
           </div>
 
           <Sheet open={internalValuationOpen} onOpenChange={setInternalValuationOpen}>
