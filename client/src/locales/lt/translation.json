@@ -36,7 +36,13 @@
     "collateral": "Užstatas",
     "interestRate": "Palūkanų norma",
     "approve": "Patvirtinti",
-    "reject": "Atmesti"
+    "reject": "Atmesti",
+    "pawn": {
+      "new": "Nauja Užstato Paskola",
+      "itemDetails": "Daikto Informacija",
+      "itemDetailsDescription": "Pateikite išsamią informaciją apie daiktą (gamintojas, modelis, dydis, techniniai parametrai ir kt.)",
+      "submit": "Pateikti Užstato Paskolą"
+    }
   },
   "clients": {
     "title": "Klientai",

@@ -9,6 +9,7 @@ import ApplicationsPage from "@/pages/ApplicationsPage";
 import ClientsPage from "@/pages/ClientsPage";
 import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
+import PawnLoanPage from "@/pages/PawnLoanPage";
 import { useAuthStore } from "@/stores/authStore";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -36,6 +37,13 @@ function Router() {
         {() => (
           <PrivateRoute>
             <LoansPage />
+          </PrivateRoute>
+        )}
+      </Route>
+      <Route path="/pawn-loan">
+        {() => (
+          <PrivateRoute>
+            <PawnLoanPage />
           </PrivateRoute>
         )}
       </Route>

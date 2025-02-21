@@ -36,7 +36,13 @@
     "collateral": "Nodrošinājums",
     "interestRate": "Procentu likme",
     "approve": "Apstiprināt",
-    "reject": "Noraidīt"
+    "reject": "Noraidīt",
+    "pawn": {
+      "new": "Jauns Lombarda Kredīts",
+      "itemDetails": "Priekšmeta Informācija",
+      "itemDetailsDescription": "Lūdzu, sniedziet detalizētu informāciju par priekšmetu (ražotājs, modelis, izmērs, tehniskie parametri utt.)",
+      "submit": "Iesniegt Lombarda Kredītu"
+    }
   },
   "clients": {
     "title": "Klienti",

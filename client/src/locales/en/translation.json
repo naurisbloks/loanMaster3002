@@ -39,7 +39,13 @@
     "collateral": "Collateral",
     "interestRate": "Interest Rate",
     "approve": "Approve",
-    "reject": "Reject"
+    "reject": "Reject",
+    "pawn": {
+      "new": "New Pawn Loan",
+      "itemDetails": "Item Details",
+      "itemDetailsDescription": "Please provide detailed information about the item (manufacturer, model, size, technical parameters, etc.)",
+      "submit": "Submit Pawn Loan"
+    }
   },
   "clients": {
     "title": "Clients",
