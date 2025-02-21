@@ -19,6 +19,7 @@ import {
 import { DollarSign, Users, Clock, CheckCircle, Search, Package, Wallet, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
 
 export default function Dashboard() {
   const { loans, fetchLoans } = useLoanStore();
@@ -73,15 +74,16 @@ export default function Dashboard() {
     </Button>
   );
 
-  const StatCard = ({ title, value, icon: Icon, subtitle }: any) => (
-    <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-[#064296]/5 to-transparent">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+  const StatCard = ({ title, value, icon: Icon, subtitle, colors }: any) => (
+    <Card className="overflow-hidden relative">
+      <AnimatedGradient colors={colors} speed={0.03} blur="medium" />
+      <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
         <CardTitle className="text-sm font-medium text-[#2E2E36]">
           {title}
         </CardTitle>
         <Icon className="h-4 w-4 text-[#064296]" />
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="text-2xl font-bold text-[#064296]">{value}</div>
         {subtitle && (
           <p className="text-xs text-[#2E2E36]/70 mt-1">{subtitle}</p>
@@ -92,14 +94,13 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-
       <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-r from-[#064296]/5 to-transparent">
         <CardHeader className="border-b">
           <CardTitle className="text-[#2E2E36]">Quick Search</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           {/* Search Bar */}
-          <div className=" max-w-2xl mx-auto px-4">
+          <div className="max-w-2xl mx-auto px-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#2E2E36]/50" />
               <Input
@@ -112,7 +113,6 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
-      
 
       {/* Quick Actions */}
       <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-r from-[#064296]/5 to-transparent">
@@ -151,24 +151,28 @@ export default function Dashboard() {
           value={`$${loanStats.totalAmount.toLocaleString()}`}
           icon={DollarSign}
           subtitle="Across all loan types"
+          colors={["#3B82F6", "#60A5FA", "#93C5FD"]}
         />
         <StatCard
           title="Total Loans"
           value={loanStats.total}
           icon={Users}
           subtitle="Active and pending loans"
+          colors={["#60A5FA", "#34D399", "#93C5FD"]}
         />
         <StatCard
           title="Active Loans"
           value={loanStats.active}
           icon={CheckCircle}
           subtitle="Currently active loans"
+          colors={["#F59E0B", "#A78BFA", "#FCD34D"]}
         />
         <StatCard
           title="Pending Applications"
           value={loanStats.pending}
           icon={Clock}
           subtitle="Awaiting approval"
+          colors={["#3B82F6", "#A78BFA", "#FBCFE8"]}
         />
       </div>
 
