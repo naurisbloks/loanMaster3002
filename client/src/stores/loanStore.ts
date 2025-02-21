@@ -1,81 +1,194 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { create } from 'zustand';
+import { Loan, LoanFormData } from '@/types';
+import { toast } from "@/hooks/use-toast";
 
-export interface LoanApplication {
-  id: string
-  itemName: string
-  itemValue: number
-  loanAmount: number
-  status: 'pending' | 'approved' | 'rejected'
-  createdAt: string
-  updatedAt: string
+interface LoanStore {
+  loans: Loan[];
+  loading: boolean;
+  error: string | null;
+  fetchLoans: () => Promise<void>;
+  createLoan: (data: LoanFormData) => Promise<void>;
+  updateLoan: (id: number, data: Partial<Loan>) => Promise<void>;
+  updateLoanStatus: (id: number, status: Loan['status']) => Promise<void>;
 }
 
-export interface ActiveLoan {
-  id: string
-  applicationId: string
-  startDate: string
-  endDate: string
-  amount: number
-  interestRate: number
-  status: 'active' | 'paid' | 'defaulted'
-}
+// Initial mock data
+const initialLoans: Loan[] = [
+  {
+    id: 1,
+    userId: 1,
+    type: 'pawn',
+    amount: 5000,
+    status: 'pending',
+    interestRate: 5,
+    term: 12,
+    purpose: 'Business expansion',
+    collateral: 'Jewelry',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    userId: 1,
+    type: 'consumer',
+    amount: 10000,
+    status: 'approved',
+    interestRate: 7.5,
+    term: 24,
+    purpose: 'Home renovation',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    userId: 2,
+    type: 'retail',
+    amount: 2000,
+    status: 'active',
+    interestRate: 4.5,
+    term: 6,
+    purpose: 'Electronics purchase',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
 
-const STORAGE_KEY_APPLICATIONS = 'loan_applications'
-const STORAGE_KEY_LOANS = 'active_loans'
+// Helper function to get loans from localStorage
+const getStoredLoans = (): Loan[] => {
+  try {
+    const storedLoans = localStorage.getItem('loans');
+    return storedLoans ? JSON.parse(storedLoans) : initialLoans;
+  } catch (error) {
+    console.error('Failed to parse loans from localStorage:', error);
+    return initialLoans;
+  }
+};
 
-export const useLoanStore = defineStore('loan', () => {
-  const applications = ref<LoanApplication[]>([])
-  const activeLoans = ref<ActiveLoan[]>([])
+// Helper function to save loans to localStorage
+const saveLoansToStorage = (loans: Loan[]) => {
+  try {
+    localStorage.setItem('loans', JSON.stringify(loans));
+  } catch (error) {
+    console.error('Failed to save loans to localStorage:', error);
+  }
+};
 
-  // Load initial data from localStorage
-  const loadStoredData = () => {
-    const storedApplications = localStorage.getItem(STORAGE_KEY_APPLICATIONS)
-    const storedLoans = localStorage.getItem(STORAGE_KEY_LOANS)
-    
-    if (storedApplications) {
-      applications.value = JSON.parse(storedApplications)
+export const useLoanStore = create<LoanStore>((set) => ({
+  loans: getStoredLoans(),
+  loading: false,
+  error: null,
+
+  fetchLoans: async () => {
+    try {
+      set({ loading: true });
+      const loans = getStoredLoans();
+      set({ loans, loading: false });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
     }
-    if (storedLoans) {
-      activeLoans.value = JSON.parse(storedLoans)
+  },
+
+  createLoan: async (data: LoanFormData) => {
+    try {
+      set({ loading: true });
+      const currentLoans = getStoredLoans();
+      const newLoan: Loan = {
+        id: Math.max(0, ...currentLoans.map(loan => loan.id)) + 1,
+        userId: 1,
+        ...data,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const updatedLoans = [...currentLoans, newLoan];
+      saveLoansToStorage(updatedLoans);
+
+      set({
+        loans: updatedLoans,
+        loading: false,
+      });
+
+      toast({
+        title: "Success",
+        description: "Loan application submitted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
     }
-  }
+  },
 
-  // Save data to localStorage
-  const saveData = () => {
-    localStorage.setItem(STORAGE_KEY_APPLICATIONS, JSON.stringify(applications.value))
-    localStorage.setItem(STORAGE_KEY_LOANS, JSON.stringify(activeLoans.value))
-  }
+  updateLoan: async (id: number, data: Partial<Loan>) => {
+    try {
+      set({ loading: true });
+      const currentLoans = getStoredLoans();
+      const updatedLoans = currentLoans.map((loan) =>
+        loan.id === id
+          ? {
+              ...loan,
+              ...data,
+              updatedAt: new Date().toISOString(),
+            }
+          : loan
+      );
 
-  // Create new loan application
-  const createApplication = (application: Omit<LoanApplication, 'id' | 'status' | 'createdAt' | 'updatedAt'>) => {
-    const newApplication: LoanApplication = {
-      ...application,
-      id: crypto.randomUUID(),
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      saveLoansToStorage(updatedLoans);
+      set({
+        loans: updatedLoans,
+        loading: false,
+      });
+
+      toast({
+        title: "Success",
+        description: "Loan details updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
     }
-    
-    applications.value.push(newApplication)
-    saveData()
-    return newApplication
-  }
+  },
 
-  // Get all applications
-  const getAllApplications = computed(() => applications.value)
+  updateLoanStatus: async (id: number, status: Loan['status']) => {
+    try {
+      set({ loading: true });
+      const currentLoans = getStoredLoans();
+      const updatedLoans = currentLoans.map((loan) =>
+        loan.id === id 
+          ? { ...loan, status, updatedAt: new Date().toISOString() } 
+          : loan
+      );
 
-  // Get all active loans
-  const getAllActiveLoans = computed(() => activeLoans.value)
+      saveLoansToStorage(updatedLoans);
+      set({
+        loans: updatedLoans,
+        loading: false,
+      });
 
-  // Initialize store
-  loadStoredData()
-
-  return {
-    applications,
-    activeLoans,
-    createApplication,
-    getAllApplications,
-    getAllActiveLoans
-  }
-})
+      toast({
+        title: "Success",
+        description: `Loan status updated to ${status}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+}));
