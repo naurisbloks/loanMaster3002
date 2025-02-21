@@ -25,6 +25,7 @@ import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Client } from "@/types";
+import ClientDetails from "@/components/clients/ClientDetails";
 
 const formSchema = z.object({
   itemDetails: z.string().min(1, "Item details are required"),
@@ -38,6 +39,7 @@ export default function PawnLoanForm() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [clientDetailsOpen, setClientDetailsOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,23 +87,30 @@ export default function PawnLoanForm() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  fetchClients();
-                  setSearchOpen(true);
-                }}
+            {selectedClient && (
+              <div 
+                className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
+                onClick={() => setClientDetailsOpen(true)}
               >
-                {t("loans.pawn.addClient")}
-              </Button>
-              {selectedClient && (
-                <p className="text-sm text-muted-foreground">
-                  {selectedClient.firstName} {selectedClient.lastName}
-                </p>
-              )}
-            </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-8">
+                    <div>
+                      <span className="font-medium">{selectedClient.firstName} {selectedClient.lastName}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">{selectedClient.email}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">{selectedClient.phone}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">{selectedClient.address}</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm">View Details</Button>
+                </div>
+              </div>
+            )}
 
             <FormField
               control={form.control}
@@ -124,13 +133,26 @@ export default function PawnLoanForm() {
             />
           </div>
 
-          <Button
-            type="submit"
-            className="w-full md:w-auto md:min-w-[200px] h-12"
-            size="lg"
-          >
-            {t("loans.pawn.submit")}
-          </Button>
+          <div className="flex justify-between items-center">
+            <Button
+              type="submit"
+              className="w-full md:w-auto md:min-w-[200px] h-12"
+              size="lg"
+            >
+              {t("loans.pawn.submit")}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                fetchClients();
+                setSearchOpen(true);
+              }}
+            >
+              {t("loans.pawn.addClient")}
+            </Button>
+          </div>
         </form>
       </Form>
 
@@ -177,6 +199,12 @@ export default function PawnLoanForm() {
           </div>
         </SheetContent>
       </Sheet>
+
+      <ClientDetails
+        client={selectedClient}
+        open={clientDetailsOpen}
+        onOpenChange={setClientDetailsOpen}
+      />
     </>
   );
 }
