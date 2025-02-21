@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLoanStore } from "@/stores/loanStore";
 import { useEffect, useState } from "react";
@@ -20,8 +21,8 @@ const statusColors: Record<Loan['status'], string> = {
   closed: "bg-gray-500",
 };
 
-export default function LoanList() {
-  const { loans, fetchLoans } = useLoanStore();
+export default function ApplicationList() {
+  const { loans, fetchLoans, updateLoanStatus } = useLoanStore();
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -29,12 +30,17 @@ export default function LoanList() {
     fetchLoans();
   }, [fetchLoans]);
 
-  // Filter only active loans
-  const activeLoans = loans.filter(loan => loan.status === "active");
+  // Filter only pending applications
+  const applications = loans.filter(loan => loan.status === "pending");
 
   const handleRowClick = (loan: Loan) => {
     setSelectedLoan(loan);
     setDetailsOpen(true);
+  };
+
+  const handleStatusChange = async (e: React.MouseEvent, id: number, status: Loan['status']) => {
+    e.stopPropagation();
+    await updateLoanStatus(id, status);
   };
 
   return (
@@ -46,12 +52,12 @@ export default function LoanList() {
               <TableHead>ID</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {activeLoans.map((loan) => (
+            {applications.map((loan) => (
               <TableRow
                 key={loan.id}
                 className="cursor-pointer hover:bg-muted/50"
@@ -61,12 +67,24 @@ export default function LoanList() {
                 <TableCell className="capitalize">{loan.type}</TableCell>
                 <TableCell>${loan.amount}</TableCell>
                 <TableCell>
-                  <Badge className={statusColors[loan.status]}>
-                    {loan.status}
-                  </Badge>
+                  {new Date(loan.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {new Date(loan.createdAt).toLocaleDateString()}
+                  <div className="space-x-2">
+                    <Button
+                      size="sm"
+                      onClick={(e) => handleStatusChange(e, loan.id, "approved")}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={(e) => handleStatusChange(e, loan.id, "rejected")}
+                    >
+                      Reject
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
