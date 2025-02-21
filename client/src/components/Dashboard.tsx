@@ -133,7 +133,7 @@ export default function Dashboard() {
             <QuickActionButton
               icon={Wallet}
               label="New Pawn Loan"
-              path="/pawn-loan"
+              path="/applications"
             />
             <QuickActionButton
               icon={CreditCard}
