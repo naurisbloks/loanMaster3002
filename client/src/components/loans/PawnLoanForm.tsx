@@ -120,6 +120,46 @@ export default function PawnLoanForm() {
     setSelectedClient(null);
   };
 
+  const ClientInfoCard = () => (
+    selectedClient && (
+      <div className="p-4 mb-6 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <div>
+              <span className="font-medium">{selectedClient.firstName} {selectedClient.lastName}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">{selectedClient.email}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">{selectedClient.phone}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">{selectedClient.address}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setClientDetailsOpen(true)}
+            >
+              View Details
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleRemoveClient}
+              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+            >
+              {t("loans.pawn.removeClient")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
   return (
     <>
       {currentStep === 1 && (
@@ -133,43 +173,7 @@ export default function PawnLoanForm() {
                 </p>
               </div>
 
-              {selectedClient && (
-                <div className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-8">
-                      <div>
-                        <span className="font-medium">{selectedClient.firstName} {selectedClient.lastName}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">{selectedClient.email}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">{selectedClient.phone}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">{selectedClient.address}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setClientDetailsOpen(true)}
-                      >
-                        View Details
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleRemoveClient}
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                      >
-                        {t("loans.pawn.removeClient")}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <ClientInfoCard />
 
               <FormField
                 control={itemDetailsForm.control}
@@ -226,6 +230,8 @@ export default function PawnLoanForm() {
                   Please provide detailed information about the device
                 </p>
               </div>
+
+              <ClientInfoCard />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
@@ -379,7 +385,6 @@ export default function PawnLoanForm() {
       )}
 
       {/*Step 3 and 4 would be added here similarly.  This example only shows steps 1 and 2.*/}
-
 
       <Sheet open={searchOpen} onOpenChange={setSearchOpen}>
         <SheetContent className="w-full sm:max-w-xl">
